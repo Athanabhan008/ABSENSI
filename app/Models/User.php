@@ -22,9 +22,6 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'divisi',
-        'nip',
-        'company_name',
     ];
 
     /**
@@ -45,9 +42,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function prWapus()
-    {
-        return $this->hasMany(Wapu::class, 'id_sales');
-    }
 }

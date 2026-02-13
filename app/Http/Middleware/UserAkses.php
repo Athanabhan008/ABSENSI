@@ -16,9 +16,9 @@ class UserAkses
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (!auth()->check()) {
-            return redirect('/')->withErrors('Silahkan login terlebih dahulu');
-        }
+       if(auth()->user()->role == $roles){
+        return $next($request);
+       }
 
         if (in_array(auth()->user()->role, $roles)) {
             return $next($request);

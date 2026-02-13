@@ -1,420 +1,252 @@
-@extends('layouts.manager.template_manager')
+@extends('layouts.template_absen')
 
 @section('content')
 
-@push('css')
-<link rel="stylesheet" href="../../admin/assets/css/style.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
 <style>
-  /* main {
-    overflow-x: hidden;
-    background-color: #d9d9d9bc;
-  } */
-
-  .main-content {
-    overflow-x: hidden;
-    max-width: 100vw;
-  }
-
-  .container-fluid {
-    padding-right: 15px;
-    padding-left: 15px;
-    width: 100%;
-    overflow-x: hidden;
-  }
-
-  .table-responsive {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    max-width: 100%;
-  }
-
-  .swiper-pagination {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    margin-top: 15px;
-  }
+    .logout{
+        position: absolute;
+        color: white;
+        font-size: 30px;
+        text-decoration: none;
+        right: 30px;
+        margin-top: 40px;
+}
 </style>
 
-<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg overflow-hidden">
-    <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
-      <div class="container-fluid py-1 px-3">
-      </div>
-    </nav>
-    <!-- End Navbar -->
-      <div class="row g-0">
-        <div class="col-12">
-          <div class="row g-3">
+<body style="background-color:#e9ecef;">
 
-            <h4>Pemerintahan</h4>
-            <div class="col-lg-6 col-md-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="swiper">
-                            <div class="slider-wrapper">
-                                <div class="card-list swiper-wrapper">
-                                    <div class="card-item swiper-slide">
-                                        <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                        <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                        </h5>
-                                        <span class="text-white text-sm">Pemasukkan Hari Ini</span>
-                                      </div>
-                                      <div class="card-item swiper-slide">
-                                        <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                        <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                        </h5>
-                                        <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                                      </div>
-                                      <div class="card-item swiper-slide">
-                                        <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                        <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                        </h5>
-                                        <span class="text-white text-sm">Pemasukkan Tahun Ini</span>
+    <!-- loader -->
+    <div id="loader">
+        <div class="spinner-border text-primary" role="status"></div>
+    </div>
+    <!-- * loader -->
+
+
+
+    <!-- App Capsule -->
+    <div id="appCapsule">
+        <div class="section" id="user-section">
+            <a href="/logout" class="logout">
+                <ion-icon name="log-out-outline"></ion-icon>
+            </a>
+            <div id="user-detail">
+                <div class="avatar">
+                    <img src="{{ asset('absensi/assets/img/sample/avatar/avatar1.jpg') }}" alt="avatar" class="imaged w64 rounded">
+                </div>
+                <div id="user-info">
+                    <h2 id="user-name">{{ auth()->user()->name }}</h2>
+                    <span id="user-role">Head of IT</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="menu-section">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="list-menu">
+                        <div class="item-menu text-center">
+                            <div class="menu-icon">
+                                <a href="" class="green" style="font-size: 40px;">
+                                    <ion-icon name="person-sharp"></ion-icon>
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                <span class="text-center">Profil</span>
+                            </div>
+                        </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-icon">
+                                <p style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: 35px;">{{ $sisa_cuti }}</p>
+                                <small class="text-muted" style="font-size: 0.75rem;">sisa dari {{ $jatah_cuti }}</small>
+                            </div>
+                            <div class="menu-name">
+                                <span class="text-center">Cuti</span>
+                                <small class="d-block text-muted" style="font-size: 0.7rem;">terpakai {{ $jmlcuti }}</small>
+                            </div>
+                        </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-icon">
+                                <a href="" class="warning" style="font-size: 40px;">
+                                    <ion-icon name="document-text"></ion-icon>
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                <span class="text-center">Histori</span>
+                            </div>
+                        </div>
+                        <div class="item-menu text-center">
+                            <div class="menu-icon">
+                                <a href="" class="orange" style="font-size: 40px;">
+                                    <ion-icon name="location"></ion-icon>
+                                </a>
+                            </div>
+                            <div class="menu-name">
+                                Lokasi
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="section mt-2" id="presence-section">
+            <div class="todaypresence">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="card gradasigreen">
+                            <div class="card-body">
+                                <div class="presencecontent">
+                                    <div class="iconpresence">
+                                        @if ($absensihariini != null)
+                                        @php
+                                            $path = Storage::url('uploads/absensi/' . $absensihariini->foto_masuk);
+                                        @endphp
+                                            <img src="{{ url($path) }}" width="75px" alt="">
+                                        @else
+                                        <ion-icon name="camera"></ion-icon>
+                                        @endif
+                                    </div>
+                                    <div class="presencedetail">
+                                        <h4 class="presencetitle">Masuk</h4>
+                                        <span>{{ $absensihariini != null ? $absensihariini->jam_masuk : 'Belum Absen' }}</span>
                                     </div>
                                 </div>
-                                <div class="swiper-pagination"></div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-    <div class="col-lg-6 col-md-6 col-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="swiper">
-                    <div class="slider-wrapper">
-                        <div class="card-list swiper-wrapper">
-                            <div class="card-item swiper-slide">
-                                <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                    357
-                                </h5>
-                                <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                            </div>
-                            <div class="card-item swiper-slide">
-                                <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                    357
-                                </h5>
-                                <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                            </div>
-                            <div class="card-item swiper-slide">
-                                <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                    357
-                                </h5>
-                                <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                            </div>
-                        </div>
-                        <div class="swiper-pagination"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="row g-0">
-        <div class="col-12">
-          <div class="row g-3">
-
-            <h4>Swasta</h4>
-            <div class="col-lg-6 col-md-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="swiper">
-                            <div class="slider-wrapper">
-                                <div class="card-list swiper-wrapper">
-                                    <div class="card-item swiper-slide">
-                                        <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                        <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                        </h5>
-                                        <span class="text-white text-sm">Pemasukkan Hari Ini</span>
+                    <div class="col-6">
+                        <div class="card gradasired">
+                            <div class="card-body">
+                                <div class="presencecontent">
+                                    <div class="iconpresence">
+                                        @if ($absensihariini != null && $absensihariini->foto_keluar != null)
+                                        @php
+                                            $path = Storage::url('uploads/absensi/' . $absensihariini->foto_keluar);
+                                        @endphp
+                                            <img src="{{ url($path) }}" width="75px" alt="">
+                                        @else
+                                        <ion-icon name="camera"></ion-icon>
+                                        @endif
                                     </div>
-                                    <div class="card-item swiper-slide">
-                                        <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                        <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                        </h5>
-                                        <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                                    </div>
-                                    <div class="card-item swiper-slide">
-                                        <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                        <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                        </h5>
-                                        <span class="text-white text-sm">Pemasukkan Tahun Ini</span>
+                                    <div class="presencedetail">
+                                        <h4 class="presencetitle">Pulang</h4>
+                                        <span>{{ $absensihariini != null && $absensihariini->jam_keluar != null ? $absensihariini->jam_keluar : 'Belum Absen' }}</span>
                                     </div>
                                 </div>
-                                <div class="swiper-pagination"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-    <div class="col-lg-6 col-md-6 col-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="swiper">
-                    <div class="slider-wrapper">
-                        <div class="card-list swiper-wrapper">
-                            <div class="card-item swiper-slide">
-                                <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                    357
-                                </h5>
-                                <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                            </div>
-                            <div class="card-item swiper-slide">
-                                <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                    357
-                                </h5>
-                                <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                            </div>
-                            <div class="card-item swiper-slide">
-                                <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                    357
-                                </h5>
-                                <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
+
+            <div id="rekapabsensi">
+                <h3 class="mt-2">Rekap Absensi Bulan {{ $bulan_nama_carbon }} Tahun {{ $tahunSekarang }}</h3>
+                <div class="row">
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem;">
+                                <span class="badge bg-danger" style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index: 999;">{{ $rekappresensi->jmlhadir }}</span>
+                                <ion-icon name="accessibility-outline" style="font-size: 30px;" class="text-primary mb-1"></ion-icon>
+                                <br>
+                                <span style="font-size: 0.8rem; font-weight: 500;">HADIR</span>
                             </div>
                         </div>
-                        <div class="swiper-pagination"></div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="row g-0">
-        <div class="col-12">
-          <div class="row g-3">
-
-            <h4>Non PPN</h4>
-            <div class="col-lg-6 col-md-6 col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="swiper">
-                            <div class="slider-wrapper">
-                                <div class="card-list swiper-wrapper ">
-                                    <div class="card-item swiper-slide">
-                                        <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                        <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                            357
-                                        </h5>
-                                        <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                                    </div>
-                                    <div class="card-item swiper-slide">
-                                        <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                        <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                            357
-                                        </h5>
-                                        <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                                    </div>
-                                    <div class="card-item swiper-slide">
-                                        <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                        <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                            357
-                                        </h5>
-                                        <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                                    </div>
-                                </div>
-                                <div class="swiper-pagination"></div>
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem;">
+                                <span class="badge bg-danger" style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index: 999;">{{ $jmlcuti ?? 0 }}</span>
+                                <ion-icon name="newspaper-outline" style="font-size: 30px;" class="text-success mb-1"></ion-icon>
+                                <br>
+                                <span style="font-size: 0.8rem; font-weight: 500;">IZIN</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem;">
+                                @foreach ($rekapsakit as $data)
+                                <span class="badge bg-danger" style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index: 999;">{{ $data->jmlsakit }}</span>
+                                @endforeach
+                                <ion-icon name="medkit-outline" style="font-size: 30px;" class="text-warning mb-1"></ion-icon>
+                                <br>
+                                <span style="font-size: 0.8rem; font-weight: 500;">SAKIT</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="card">
+                            <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem;">
+                                <span class="badge bg-danger" style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index: 999;">{{ $rekappresensi->jmlterlambat }}</span>
+                                <ion-icon name="alarm-outline" style="font-size: 30px;" class="text-danger mb-1"></ion-icon>
+                                <br>
+                                <span style="font-size: 0.8rem; font-weight: 500;">TELAT</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-    <div class="col-lg-6 col-md-6 col-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="swiper">
-                    <div class="slider-wrapper">
-                        <div class="card-list swiper-wrapper">
-                            <div class="card-item swiper-slide">
-                                <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                    357
-                                </h5>
-                                <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                            </div>
-                            <div class="card-item swiper-slide">
-                                <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                    357
-                                </h5>
-                                <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                            </div>
-                            <div class="card-item swiper-slide">
-                                <i class="fa-solid fa-money-bill-trend-up icon-wrapper"></i>
-                                <h5 class="text-white font-weight-bolder mb-0" style="margin-top: -5px">
-                                    357
-                                </h5>
-                                <span class="text-white text-sm">Pemasukkan Bulan Ini</span>
-                            </div>
-                        </div>
-                        <div class="swiper-pagination"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-          </div>
-        </div>
-      </div>
 
-
-      <div class="row my-4">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-header pb-0">
-              <div class="row">
-                <div class="col-lg-6 col-7">
-                  <h6>Overview Penjualan</h6>
-                </div>
-                <div class="col-lg-6 col-5 my-auto text-end">
-                  <div class="dropdown float-lg-end pe-4">
-                    <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="fa fa-ellipsis-v text-secondary"></i>
-                    </a>
-                    <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a></li>
+            <div class="presencetab mt-2">
+                <div class="tab-pane fade show active" id="pilled" role="tabpanel">
+                    <ul class="nav nav-tabs style1" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="tab" href="#home" role="tab">
+                                Bulan Ini
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="tab" href="#profile" role="tab">
+                                Leaderboard
+                            </a>
+                        </li>
                     </ul>
-                  </div>
                 </div>
-              </div>
-            </div>
-            <div class="card-body px-0 pb-2">
-              <div class="table-responsive overflow-hidden">
-                <!-- Grafik Overview Penjualan -->
-                    <div style="height: 300px;" class="container">
-                        <canvas id="salesChart"></canvas>
+                <div class="tab-content mt-2" style="margin-bottom:100px;">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel">
+                        <ul class="listview image-listview">
+                            @foreach ($historibulanini as $item)
+                            <li>
+                                <div class="item">
+                                    <div class="icon-box bg-primary">
+                                        <ion-icon name="finger-print-outline"></ion-icon>
+                                    </div>
+                                    <div class="in">
+                                        <div>{{ date("d-m-Y", strtotime($item->tgl_absen)) }}</div>
+                                        <span class="badge badge-success">{{ $item->jam_masuk }}</span>
+                                        <span class="badge badge-danger">{{ $absensihariini != null && $item->jam_keluar != null ? $item->jam_keluar : 'Belum Absen' }}</span>
+                                    </div>
+                                </div>
+                            </li>
+
+                            @endforeach
+
+                        </ul>
                     </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel">
+                        <ul class="listview image-listview">
+                            @foreach ($leaderboard as $lb)
 
-      <footer class="footer pt-3  ">
-        <div class="container-fluid">
-          <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-6 mb-lg-0 mb-4">
-              <div class="copyright text-center text-sm text-muted text-lg-start">
-                © <script>
-                  document.write(new Date().getFullYear())
-                </script>,
-                made with <i class="fa fa-heart"></i> by
-                <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Argana</a>
-                for a better web.
-              </div>
+                            <li>
+                                <div class="item">
+                                    <img src="{{ asset('absensi/assets/img/sample/avatar/avatar1.jpg') }}" alt="image" class="image">
+                                    <div class="in">
+                                        <div>{{ $lb->name }}</div>
+                                        <span class="badge {{ $lb->jam_masuk < "08:15" ? "bg-success" : "bg-danger" }}">{{ $lb->jam_masuk }}</span>
+                                    </div>
+                                </div>
+                            </li>
+
+                            @endforeach
+                        </ul>
+                    </div>
+
+                </div>
             </div>
-            <div class="col-lg-6">
-              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
-                </li>
-              </ul>
-            </div>
-          </div>
         </div>
-      </footer>
     </div>
-  </main>
+    <!-- * App Capsule -->
 
-  @push('scripts')
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  <script>
-      document.addEventListener("DOMContentLoaded", function () {
-          const ctx = document.getElementById('salesChart').getContext('2d');
-          new Chart(ctx, {
-              type: 'line',
-              data: {
-                  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'],
-                  datasets: [
-                      {
-                          label: 'Penjualan',
-                          data: [200, 400, 250, 450, 300, 420, 380, 500, 450, 350, 400, 430],
-                          borderColor: 'magenta',
-                          fill: false,
-                          tension: 0.4
-                      },
-                      {
-                          label: 'Target',
-                          data: [150, 300, 200, 400, 250, 380, 350, 460, 420, 320, 380, 400],
-                          borderColor: 'blue',
-                          fill: false,
-                          tension: 0.4
-                      }
-                  ]
-              },
-              options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  scales: {
-                      y: { beginAtZero: true }
-                  }
-              }
-          });
-      });
-  </script>
 
-  <script>
 
-    const swiper = new Swiper('.slider-wrapper  ', {
-    loop: true,
-    grabCursor: true,
-    spaceBetween: 30,
-
-  // If we need pagination
-  pagination: {
-    el: '.swiper-pagination',
-    clickable: true,
-    dynamicBullets: true,
-  },
-
-  // Navigation arrows
-  navigation: {
-    nextEl: '.swiper-button-next',
-    prevEl: '.swiper-button-prev',
-  },
-
-  breakpoints: {
-    0: {
-        slidesPerView: 1
-    },
-    620: {
-        slidesPerView: 1
-    },
-    1024: {
-        slidesPerView: 1
-    }
-  }
-});
-
-  </script>
-  @endpush
 
 @endsection

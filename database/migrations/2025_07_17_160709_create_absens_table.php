@@ -15,7 +15,17 @@ return new class extends Migration
     {
         Schema::create('absens', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('id_user');
+            $table->date('tgl_absen');
+            $table->time('jam_masuk')->nullable();
+            $table->string('lokasi_masuk')->nullable();
+            $table->string('foto_masuk')->nullable();
+            $table->time('jam_keluar')->nullable();
+            $table->string('lokasi_keluar')->nullable();
+            $table->string('foto_keluar')->nullable();
             $table->timestamps();
+
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
