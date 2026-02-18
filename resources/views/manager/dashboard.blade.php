@@ -3,14 +3,126 @@
 @section('content')
 
 <style>
-    .logout{
+    /* User section & logout - responsive */
+    #user-section {
+        position: relative;
+        min-height: 140px;
+        padding-bottom: 20px;
+    }
+    .logout {
         position: absolute;
         color: white;
-        font-size: 30px;
+        font-size: 24px;
         text-decoration: none;
-        right: 30px;
-        margin-top: 40px;
-}
+        right: 16px;
+        top: 20px;
+        padding: 8px;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+    }
+    #user-detail {
+        padding-right: 50px; /* Ruang untuk tombol logout */
+        margin-top: 20px;
+    }
+    @media (min-width: 576px) {
+        .logout { font-size: 28px; right: 20px; }
+    }
+
+    /* Presence cards - responsive */
+    .todaypresence .row {
+        margin-left: -4px;
+        margin-right: -4px;
+    }
+    .todaypresence .col-6 {
+        padding: 4px;
+        margin-bottom: 8px;
+    }
+    .todaypresence .card-body {
+        padding: 12px !important;
+    }
+    .presencecontent {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    .iconpresence img {
+        max-width: 60px;
+        height: auto;
+    }
+    @media (max-width: 360px) {
+        .iconpresence img { max-width: 50px; }
+        .presencetitle { font-size: 0.95rem; }
+    }
+
+    /* Rekap absensi - responsive grid */
+    #rekapabsensi h3 {
+        font-size: 1rem;
+        line-height: 1.4;
+        word-wrap: break-word;
+    }
+    @media (min-width: 576px) {
+        #rekapabsensi h3 { font-size: 1.1rem; }
+    }
+    #rekapabsensi .card-body {
+        position: relative;
+        min-height: 70px;
+    }
+    #rekapabsensi .badge {
+        font-size: 0.6rem !important;
+        padding: 3px 6px;
+    }
+    @media (max-width: 360px) {
+        #rekapabsensi .card-body span:last-child { font-size: 0.7rem; }
+    }
+
+    /* Tabs - responsive */
+    .nav-tabs.style1 {
+        flex-wrap: wrap;
+    }
+    .nav-tabs.style1 .nav-link {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    /* List items - responsive badges */
+    .listview .item .in {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+    }
+    .listview .item .in > div {
+        width: 100%;
+        flex-shrink: 0;
+    }
+    .listview .item .badge {
+        font-size: 0.7rem;
+        white-space: nowrap;
+    }
+    .listview .item .image {
+        flex-shrink: 0;
+    }
+
+    /* Override global absolute positioning - mencegah overlap */
+    #presence-section {
+        position: relative !important;
+        top: auto !important;
+    }
+    .todaypresence {
+        margin-top: 20px !important;
+    }
+    @media (min-width: 576px) {
+        .todaypresence { margin-top: 30px !important; }
+    }
+
+    /* Prevent overflow */
+    #appCapsule {
+        overflow-x: hidden;
+    }
+    .section {
+        overflow-x: hidden;
+    }
 </style>
 
 <body style="background-color:#e9ecef;">
@@ -40,58 +152,11 @@
             </div>
         </div>
 
-        <div class="section" id="menu-section">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="list-menu">
-                        <div class="item-menu text-center">
-                            <div class="menu-icon">
-                                <a href="" class="green" style="font-size: 40px;">
-                                    <ion-icon name="person-sharp"></ion-icon>
-                                </a>
-                            </div>
-                            <div class="menu-name">
-                                <span class="text-center">Profil</span>
-                            </div>
-                        </div>
-                        <div class="item-menu text-center">
-                            <div class="menu-icon">
-                                <p style="font-family: Arial, Helvetica, sans-serif; font-weight: bold; font-size: 35px;">{{ $sisa_cuti }}</p>
-                                <small class="text-muted" style="font-size: 0.75rem;">sisa dari {{ $jatah_cuti }}</small>
-                            </div>
-                            <div class="menu-name">
-                                <span class="text-center">Cuti</span>
-                                <small class="d-block text-muted" style="font-size: 0.7rem;">terpakai {{ $jmlcuti }}</small>
-                            </div>
-                        </div>
-                        <div class="item-menu text-center">
-                            <div class="menu-icon">
-                                <a href="" class="warning" style="font-size: 40px;">
-                                    <ion-icon name="document-text"></ion-icon>
-                                </a>
-                            </div>
-                            <div class="menu-name">
-                                <span class="text-center">Histori</span>
-                            </div>
-                        </div>
-                        <div class="item-menu text-center">
-                            <div class="menu-icon">
-                                <a href="" class="orange" style="font-size: 40px;">
-                                    <ion-icon name="location"></ion-icon>
-                                </a>
-                            </div>
-                            <div class="menu-name">
-                                Lokasi
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
         <div class="section mt-2" id="presence-section">
             <div class="todaypresence">
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-6 mb-2">
                         <div class="card gradasigreen">
                             <div class="card-body">
                                 <div class="presencecontent">
@@ -113,7 +178,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-6 mb-2">
                         <div class="card gradasired">
                             <div class="card-body">
                                 <div class="presencecontent">
@@ -141,9 +206,9 @@
             <div id="rekapabsensi">
                 <h3 class="mt-2">Rekap Absensi Bulan {{ $bulan_nama_carbon }} Tahun {{ $tahunSekarang }}</h3>
                 <div class="row">
-                    <div class="col-3">
+                    <div class="col-6 col-md-3 mb-2">
                         <div class="card">
-                            <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem;">
+                            <div class="card-body text-center position-relative" style="padding: 12px 12px !important; line-height: 0.8rem;">
                                 <span class="badge bg-danger" style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index: 999;">{{ $rekappresensi->jmlhadir }}</span>
                                 <ion-icon name="accessibility-outline" style="font-size: 30px;" class="text-primary mb-1"></ion-icon>
                                 <br>
@@ -151,9 +216,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-6 col-md-3 mb-2">
                         <div class="card">
-                            <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem;">
+                            <div class="card-body text-center position-relative" style="padding: 12px 12px !important; line-height: 0.8rem;">
                                 <span class="badge bg-danger" style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index: 999;">{{ $jmlcuti ?? 0 }}</span>
                                 <ion-icon name="newspaper-outline" style="font-size: 30px;" class="text-success mb-1"></ion-icon>
                                 <br>
@@ -161,21 +226,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-6 col-md-3 mb-2">
                         <div class="card">
-                            <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem;">
-                                @foreach ($rekapsakit as $data)
-                                <span class="badge bg-danger" style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index: 999;">{{ $data->jmlsakit }}</span>
-                                @endforeach
+                            <div class="card-body text-center position-relative" style="padding: 12px 12px !important; line-height: 0.8rem;">
+                                @php $jmlsakit = $rekapsakit->first()->jmlsakit ?? 0; @endphp
+                                <span class="badge bg-danger" style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index: 999;">{{ $jmlsakit }}</span>
                                 <ion-icon name="medkit-outline" style="font-size: 30px;" class="text-warning mb-1"></ion-icon>
                                 <br>
                                 <span style="font-size: 0.8rem; font-weight: 500;">SAKIT</span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-6 col-md-3 mb-2">
                         <div class="card">
-                            <div class="card-body text-center" style="padding: 12px 12px !important; line-height: 0.8rem;">
+                            <div class="card-body text-center position-relative" style="padding: 12px 12px !important; line-height: 0.8rem;">
                                 <span class="badge bg-danger" style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index: 999;">{{ $rekappresensi->jmlterlambat }}</span>
                                 <ion-icon name="alarm-outline" style="font-size: 30px;" class="text-danger mb-1"></ion-icon>
                                 <br>
