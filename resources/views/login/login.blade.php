@@ -332,7 +332,7 @@
         <!-- Login Header -->
         <div class="login-header">
             <h2>Selamat Datang</h2>
-            <p>Masuk ke akun Anda untuk melanjutkan</p>
+            <p>Masuk ke akun Anda untuk melanjutkan!</p>
         </div>
 
         <!-- Form Login -->

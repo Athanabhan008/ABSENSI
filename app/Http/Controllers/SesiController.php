@@ -27,19 +27,13 @@ class SesiController extends Controller
         ];
         if(Auth::attempt($infologin)){
             if (Auth::user()->role == 'superadmin'){
-                return redirect('/manager');
+                return redirect('/dashboard');
 
-            }elseif (Auth::user()->role == 'sales'){
-                return redirect('/sales');
-
-            }elseif (Auth::user()->role == 'teknisi'){
-                return redirect('/teknisi');
-
-            }elseif (Auth::user()->role == 'super_admin'){
-                return redirect('/manager');
+            }elseif (Auth::user()->role == 'staff'){
+                return redirect('/dashboard');
 
             }elseif (Auth::user()->role == 'admin'){
-                return redirect('/manager');
+                return redirect('/dashboard');
 
             }
 
