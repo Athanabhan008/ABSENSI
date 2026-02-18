@@ -90,54 +90,48 @@
     </div>
 </div>
 
-<div class="section mt-2">
-
-    @foreach($dataizin as $item)
-
-    <ul class="listview image-listview">
+<div class="row">
+    <div class="col">
+        @foreach($dataizin as $item)
+       <ul class="listview image-listview">
         <li>
             <div class="item">
                 <div class="in">
-
                     <div>
-                        <b>
-                            {{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d-m-Y') }}
+                        <b>{{ \Carbon\Carbon::parse($item->tgl_pengajuan)->format('d-m-Y') }}
                             s/d
                             {{ \Carbon\Carbon::parse($item->tgl_pengajuan_akhir)->format('d-m-Y') }}
-                            ({{ $item->status }})
-                        </b><br>
+                             ({{ $item->status }})</b><br>
                         <small class="text-muted">{{ $item->keterangan }}</small>
                     </div>
-
-                    <a href="javascript:void(0)"
-                       onclick="openPreview('{{ asset('storage/uploads/surat_sakit/'.$item->foto_surat) }}')">
-                        <img src="{{ asset('storage/uploads/surat_sakit/'.$item->foto_surat) }}"
-                             class="preview-thumb">
+                    <a href="javascript:void(0)" class="preview-link" onclick="openPreview('{{ asset('storage/uploads/surat_sakit/'.$item->foto_surat) }}')">
+                     <img src="{{ asset('storage/uploads/surat_sakit/'.$item->foto_surat) }}" class="preview-thumb">
                     </a>
+                    <div id="imagePreviewModal" class="preview-modal" onclick="closePreview()">
+                        <span class="preview-close" onclick="event.stopPropagation(); closePreview()">&times;</span>
+                        <img class="preview-content" id="previewImage">
+                    </div>
 
                     @if ($item->status_approve == 0)
-                        <span class="badge bg-warning">Pending</span>
+                    <span class="badge bg-warning">Pending</span>
                     @elseif($item->status_approve == 1)
-                        <span class="badge bg-success">Approve</span>
-                    @else
-                        <span class="badge bg-danger">Decline</span>
+                    <span class="badge bg-success">Approve</span>
+                    @elseif($item->status_approve == 2)
+                    <span class="badge bg-danger">Decline</span>
                     @endif
-
                 </div>
             </div>
         </li>
-    </ul>
-
-    @endforeach
-
+       </ul>
+        @endforeach
     </div>
+</div>
 
-    <!-- SINGLE MODAL -->
-    <div id="imagePreviewModal" class="preview-modal" onclick="closePreview()">
-        <span class="preview-close" onclick="event.stopPropagation(); closePreview()">&times;</span>
-        <img class="preview-content" id="previewImage">
-    </div>
-
+ <div class="fab-button bottom-right" style="margin-bottom: 70px">
+    <a href="/izin_sakit/create" class="fab">
+        <ion-icon name="add-outline"></ion-icon>
+    </a>
+ </div>
 
  @push('scripts')
 
