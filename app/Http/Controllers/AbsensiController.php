@@ -21,7 +21,7 @@ class AbsensiController extends Controller
 
         // Jika sudah absen masuk DAN absen pulang (jam_keluar terisi), blok akses halaman absen
         if ($absenHariIni && !empty($absenHariIni->jam_keluar)) {
-            return redirect('/manager')->with('error', 'Anda sudah melakukan absen masuk dan absen pulang hari ini.');
+            return redirect('/dashboard')->with('error', 'Anda sudah melakukan absen masuk dan absen pulang hari ini.');
         }
 
         $cek = $absenHariIni ? 1 : 0;

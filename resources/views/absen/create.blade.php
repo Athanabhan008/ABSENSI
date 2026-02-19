@@ -207,7 +207,7 @@
                       text:  status[1],
                       icon: 'success',
                     })
-                    setTimeout("location.href='/manager'", 300);
+                    setTimeout("location.href='/dashboard'", 300);
                     }else{
                       var pesanError = status[1] ? status[1] : 'Absen gagal diproses';
                       Swal.fire({

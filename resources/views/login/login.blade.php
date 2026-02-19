@@ -2,7 +2,11 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#003C8D">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" sizes="76x76" href="admin/assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="admin/assets/img/logos/Logo MBS Corp.png">
     <title>ABSENSI</title>
@@ -26,15 +30,36 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        html {
+            overflow: hidden;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            touch-action: manipulation;
+        }
+
         body {
             background: linear-gradient(135deg, #003C8D 0%, #5CE1E6 100%);
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
-            position: relative;
+            min-height: 100dvh;
+            height: 100%;
+            padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             overflow: hidden;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Background Decorative Elements */
@@ -66,6 +91,10 @@
         .login-container {
             width: 100%;
             max-width: 450px;
+            max-height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 24px;
             padding: 50px 40px;
@@ -327,7 +356,7 @@
             <h1>ABSENSI MBS</h1>
         </div>
 
-        <img src="{{ asset('admin/assets/img/logos/Logo MBS Corp.png') }}" width="100px" alt="" style="position: relative; left: 130px; margin-bottom: 40px;">
+        <img src="{{ asset('absensi/assets/img/logombs.jpeg') }}" width="100px" alt="" style="position: relative; left: 130px; margin-bottom: 40px;">
 
         <!-- Login Header -->
         <div class="login-header">
@@ -367,6 +396,12 @@
     </div>
 
     <script>
+        // Cegah geser/overscroll di Android & mobile
+        document.addEventListener('touchmove', function(e) {
+            if (e.target.closest('.login-container')) return;
+            e.preventDefault();
+        }, { passive: false });
+
         document.addEventListener('DOMContentLoaded', function() {
             const passwordInput = document.getElementById('password');
             const passwordToggle = document.getElementById('passwordToggle');
