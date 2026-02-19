@@ -29,9 +29,10 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/',[SesiController::class, 'login']);
 });
 
-// Route::get('/home', function() {
-//     return redirect('/asu');
-// });
+// Redirect /home ke login jika belum login, ke dashboard jika sudah login (hindari 404 saat kembali tanpa logout)
+Route::get('/home', function () {
+    return auth()->check() ? redirect('/dashboard') : redirect()->route('login');
+})->name('home');
 
 Route::middleware(['guest:web'])->group(function () {
     Route::get('/panel-admin', [SesiController::class, 'index_admin'])->name('login');
