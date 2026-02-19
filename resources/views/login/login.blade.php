@@ -347,6 +347,35 @@
         .login-container {
             animation: fadeInUp 0.6s ease-out;
         }
+
+        .button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.exit-button {
+    flex: 1;
+    padding: 16px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.exit-button:hover {
+    background: #c0392b;
+}
+
+.login-button {
+    flex: 1;
+}
+
+
     </style>
 </head>
 <body>
@@ -386,7 +415,16 @@
                 <div class="error-message" id="passwordError">Password harus diisi</div>
             </div>
 
-            <button type="submit" class="login-button">Masuk</button>
+            <div class="button-group">
+                <button type="button" onclick="exitApp()" class="exit-button">
+                    Keluar
+                </button>
+
+                <button type="submit" class="login-button">
+                    Masuk
+                </button>
+            </div>
+
         </form>
 
         <!-- Footer -->
@@ -461,5 +499,18 @@
             });
         });
     </script>
+
+<script>
+    function exitApp() {
+    if (confirm("Keluar dari aplikasi?")) {
+        if (typeof Android !== "undefined" && Android.exitApp) {
+            Android.exitApp();
+        } else {
+            alert("Fitur hanya tersedia di aplikasi Android");
+        }
+    }
+}
+    </script>
+
 </body>
 </html>
