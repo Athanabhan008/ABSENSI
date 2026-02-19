@@ -2,11 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#003C8D">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="apple-touch-icon" sizes="76x76" href="admin/assets/img/apple-icon.png">
     <link rel="icon" type="image/png" href="admin/assets/img/logos/Logo MBS Corp.png">
     <title>ABSENSI</title>
@@ -30,36 +26,15 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        html {
-            overflow: hidden;
-            overscroll-behavior: none;
-            -webkit-overflow-scrolling: touch;
-            height: 100%;
-            width: 100%;
-            position: fixed;
-            touch-action: manipulation;
-        }
-
         body {
             background: linear-gradient(135deg, #003C8D 0%, #5CE1E6 100%);
-            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            min-height: 100dvh;
-            height: 100%;
-            padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            padding: 20px;
+            position: relative;
             overflow: hidden;
-            overscroll-behavior: none;
-            -webkit-overflow-scrolling: touch;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
         }
 
         /* Background Decorative Elements */
@@ -91,10 +66,6 @@
         .login-container {
             width: 100%;
             max-width: 450px;
-            max-height: 100%;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior-y: contain;
             background: rgba(255, 255, 255, 0.98);
             border-radius: 24px;
             padding: 50px 40px;
@@ -347,35 +318,6 @@
         .login-container {
             animation: fadeInUp 0.6s ease-out;
         }
-
-        .button-group {
-    display: flex;
-    gap: 12px;
-    margin-top: 10px;
-}
-
-.exit-button {
-    flex: 1;
-    padding: 16px;
-    background: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.exit-button:hover {
-    background: #c0392b;
-}
-
-.login-button {
-    flex: 1;
-}
-
-
     </style>
 </head>
 <body>
@@ -385,7 +327,7 @@
             <h1>ABSENSI MBS</h1>
         </div>
 
-        <img src="{{ asset('absensi/assets/img/logombs.jpeg') }}" width="100px" alt="" style="position: relative; left: 130px; margin-bottom: 40px;">
+            {{-- <img src="{{ asset('admin/assets/img/logos/Logo MBS Corp.png') }}" width="100px" alt="" style="position: relative; left: 130px; margin-bottom: 40px;"> --}}
 
         <!-- Login Header -->
         <div class="login-header">
@@ -415,31 +357,11 @@
                 <div class="error-message" id="passwordError">Password harus diisi</div>
             </div>
 
-            <div class="button-group">
-                <button type="button" onclick="exitApp()" class="exit-button">
-                    Keluar
-                </button>
-
-                <button type="submit" class="login-button">
-                    Masuk
-                </button>
-            </div>
-
+            <button type="submit" class="login-button">Masuk</button>
         </form>
-
-        <!-- Footer -->
-        <div class="login-footer">
-            <p>Sistem Manajemen Perkantoran Terintegrasi</p>
-        </div>
     </div>
 
     <script>
-        // Cegah geser/overscroll di Android & mobile
-        document.addEventListener('touchmove', function(e) {
-            if (e.target.closest('.login-container')) return;
-            e.preventDefault();
-        }, { passive: false });
-
         document.addEventListener('DOMContentLoaded', function() {
             const passwordInput = document.getElementById('password');
             const passwordToggle = document.getElementById('passwordToggle');
@@ -499,90 +421,5 @@
             });
         });
     </script>
-
-<script>
-    // Skema URL untuk keluar dari app Android (WebView). Di project Android,
-    // daftarkan intent filter untuk scheme ini dan panggil finish() saat URL ini dibuka.
-    var EXIT_APP_SCHEME = 'absensi://exit';
-
-    function exitApp() {
-        if (!confirm("Keluar dari aplikasi?")) return;
-
-        var isAndroidApp = /Android/i.test(navigator.userAgent) && (
-            document.referrer.indexOf('android-app://') === 0 ||
-            window.matchMedia('(display-mode: standalone)').matches ||
-            navigator.standalone === true
-        );
-
-        // Method 1: Cordova / PhoneGap
-        if (typeof navigator.app !== 'undefined' && navigator.app.exitApp) {
-            navigator.app.exitApp();
-            return;
-        }
-
-        // Method 2: Android WebView - interface umum (Android, App, Native, WebApp)
-        if (window.Android && typeof window.Android.closeApp === 'function') {
-            window.Android.closeApp();
-            return;
-        }
-        if (window.App && typeof window.App.exit === 'function') {
-            window.App.exit();
-            return;
-        }
-        if (window.Native && typeof window.Native.close === 'function') {
-            window.Native.close();
-            return;
-        }
-        if (window.WebApp && typeof window.WebApp.close === 'function') {
-            window.WebApp.close();
-            return;
-        }
-
-        // Method 3: TWA / Trusted Web Activity (Chrome)
-        if (window.TWA && typeof window.TWA.close === 'function') {
-            window.TWA.close();
-            return;
-        }
-
-        // Method 4: Capacitor
-        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
-            window.Capacitor.Plugins.App.exitApp();
-            return;
-        }
-
-        // Method 5: Aplikasi Android hasil generate - navigasi ke custom scheme.
-        // Di project Android, tangkap URL ini di WebViewClient / Intent dan panggil finish().
-        if (isAndroidApp && EXIT_APP_SCHEME) {
-            window.location.href = EXIT_APP_SCHEME;
-            setTimeout(function() {
-                try {
-                    if (!window.closed) {
-                        alert("Untuk keluar: gunakan tombol kembali atau tutup aplikasi dari recent apps.");
-                    }
-                } catch (e) {}
-            }, 400);
-            return;
-        }
-
-        // Method 6: window.close() (beberapa WebView mengizinkan)
-        window.close();
-
-        setTimeout(function() {
-            try {
-                if (!window.closed) {
-                    var isStandalone = window.matchMedia('(display-mode: standalone)').matches
-                        || window.navigator.standalone === true
-                        || document.referrer.indexOf('android-app://') === 0;
-                    if (isStandalone) {
-                        alert("Untuk keluar, gunakan tombol kembali atau tutup dari recent apps.");
-                    } else {
-                        alert("Untuk keluar, silakan tutup tab atau jendela browser ini.");
-                    }
-                }
-            } catch (e) {}
-        }, 300);
-    }
-</script>
-
 </body>
 </html>
