@@ -503,11 +503,21 @@
 <script>
     function exitApp() {
     if (confirm("Keluar dari aplikasi?")) {
-        if (typeof Android !== "undefined" && Android.exitApp) {
-            Android.exitApp();
-        } else {
-            alert("Fitur hanya tersedia di aplikasi Android");
+
+        // Method 1 (paling sering berhasil)
+        if (navigator.app) {
+            navigator.app.exitApp();
+            return;
         }
+
+        // Method 2
+        if (window.Android && Android.closeApp) {
+            Android.closeApp();
+            return;
+        }
+
+        // Method 3 fallback
+        window.close();
     }
 }
     </script>
