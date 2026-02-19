@@ -501,8 +501,18 @@
     </script>
 
 <script>
+    // Skema URL untuk keluar dari app Android (WebView). Di project Android,
+    // daftarkan intent filter untuk scheme ini dan panggil finish() saat URL ini dibuka.
+    var EXIT_APP_SCHEME = 'absensi://exit';
+
     function exitApp() {
         if (!confirm("Keluar dari aplikasi?")) return;
+
+        var isAndroidApp = /Android/i.test(navigator.userAgent) && (
+            document.referrer.indexOf('android-app://') === 0 ||
+            window.matchMedia('(display-mode: standalone)').matches ||
+            navigator.standalone === true
+        );
 
         // Method 1: Cordova / PhoneGap
         if (typeof navigator.app !== 'undefined' && navigator.app.exitApp) {
@@ -510,13 +520,25 @@
             return;
         }
 
-        // Method 2: Android WebView (custom interface)
+        // Method 2: Android WebView - interface umum (Android, App, Native, WebApp)
         if (window.Android && typeof window.Android.closeApp === 'function') {
             window.Android.closeApp();
             return;
         }
+        if (window.App && typeof window.App.exit === 'function') {
+            window.App.exit();
+            return;
+        }
+        if (window.Native && typeof window.Native.close === 'function') {
+            window.Native.close();
+            return;
+        }
+        if (window.WebApp && typeof window.WebApp.close === 'function') {
+            window.WebApp.close();
+            return;
+        }
 
-        // Method 3: Android TWA / Trusted Web Activity (Chrome)
+        // Method 3: TWA / Trusted Web Activity (Chrome)
         if (window.TWA && typeof window.TWA.close === 'function') {
             window.TWA.close();
             return;
@@ -528,19 +550,31 @@
             return;
         }
 
-        // Method 5: window.close() (berhasil jika jendela dibuka via JS / beberapa WebView)
+        // Method 5: Aplikasi Android hasil generate - navigasi ke custom scheme.
+        // Di project Android, tangkap URL ini di WebViewClient / Intent dan panggil finish().
+        if (isAndroidApp && EXIT_APP_SCHEME) {
+            window.location.href = EXIT_APP_SCHEME;
+            setTimeout(function() {
+                try {
+                    if (!window.closed) {
+                        alert("Untuk keluar: gunakan tombol kembali atau tutup aplikasi dari recent apps.");
+                    }
+                } catch (e) {}
+            }, 400);
+            return;
+        }
+
+        // Method 6: window.close() (beberapa WebView mengizinkan)
         window.close();
 
-        // Method 6: Cek setelah 300ms, jika masih terbuka = browser biasa, beri panduan
         setTimeout(function() {
             try {
                 if (!window.closed) {
-                    // PWA/standalone: arahkan ke about:blank atau beri pesan
                     var isStandalone = window.matchMedia('(display-mode: standalone)').matches
                         || window.navigator.standalone === true
                         || document.referrer.indexOf('android-app://') === 0;
                     if (isStandalone) {
-                        alert("Untuk keluar, tutup aplikasi dari pengelola tugas (task manager) atau tombol kembali.");
+                        alert("Untuk keluar, gunakan tombol kembali atau tutup dari recent apps.");
                     } else {
                         alert("Untuk keluar, silakan tutup tab atau jendela browser ini.");
                     }
