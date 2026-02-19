@@ -502,25 +502,53 @@
 
 <script>
     function exitApp() {
-    if (confirm("Keluar dari aplikasi?")) {
+        if (!confirm("Keluar dari aplikasi?")) return;
 
-        // Method 1 (paling sering berhasil)
-        if (navigator.app) {
+        // Method 1: Cordova / PhoneGap
+        if (typeof navigator.app !== 'undefined' && navigator.app.exitApp) {
             navigator.app.exitApp();
             return;
         }
 
-        // Method 2
-        if (window.Android && Android.closeApp) {
-            Android.closeApp();
+        // Method 2: Android WebView (custom interface)
+        if (window.Android && typeof window.Android.closeApp === 'function') {
+            window.Android.closeApp();
             return;
         }
 
-        // Method 3 fallback
+        // Method 3: Android TWA / Trusted Web Activity (Chrome)
+        if (window.TWA && typeof window.TWA.close === 'function') {
+            window.TWA.close();
+            return;
+        }
+
+        // Method 4: Capacitor
+        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+            window.Capacitor.Plugins.App.exitApp();
+            return;
+        }
+
+        // Method 5: window.close() (berhasil jika jendela dibuka via JS / beberapa WebView)
         window.close();
+
+        // Method 6: Cek setelah 300ms, jika masih terbuka = browser biasa, beri panduan
+        setTimeout(function() {
+            try {
+                if (!window.closed) {
+                    // PWA/standalone: arahkan ke about:blank atau beri pesan
+                    var isStandalone = window.matchMedia('(display-mode: standalone)').matches
+                        || window.navigator.standalone === true
+                        || document.referrer.indexOf('android-app://') === 0;
+                    if (isStandalone) {
+                        alert("Untuk keluar, tutup aplikasi dari pengelola tugas (task manager) atau tombol kembali.");
+                    } else {
+                        alert("Untuk keluar, silakan tutup tab atau jendela browser ini.");
+                    }
+                }
+            } catch (e) {}
+        }, 300);
     }
-}
-    </script>
+</script>
 
 </body>
 </html>
