@@ -421,5 +421,36 @@
             });
         });
     </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // Push dummy state agar tombol back bisa dideteksi
+        history.pushState(null, null, location.href);
+
+        window.addEventListener("popstate", function () {
+
+            // Konfirmasi keluar (opsional)
+            if (confirm("Keluar dari aplikasi?")) {
+
+                // Jika di Android WebView
+                if (navigator.app) {
+                    navigator.app.exitApp();
+                }
+                // Jika di browser biasa
+                else {
+                    window.close();
+                }
+
+            } else {
+                history.pushState(null, null, location.href);
+            }
+
+        });
+
+    });
+    </script>
+
+
 </body>
 </html>
