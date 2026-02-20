@@ -45,7 +45,7 @@ Route::middleware(['guest:web'])->group(function () {
 Route::middleware(['UserAkses:superadmin,admin'])->group(function() {
 
     //DASHBOARD MANAGER
-    Route::get('/dashboard',          [ManagerController::class, 'index']);
+    Route::get('/dashboard',          [ManagerController::class, 'index'])->middleware('auth');
     Route::get('/dashboard-admin',    [DashboardController::class, 'index'])->middleware('UserAkses:superadmin');
     Route::get('/karyawan',           [KaryawanController::class, 'index']);
     Route::get('/izinsakit',          [IzinsakitController::class, 'index']);

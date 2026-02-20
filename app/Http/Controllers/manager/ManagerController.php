@@ -52,6 +52,11 @@ class ManagerController extends Controller
         $bulan_nama_carbon = Carbon::now()->format('F');
         $tahunSekarang = now()->format('Y');
 
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
+
+
         return view('manager.dashboard', [
             "active" => 'manager',
             "absensihariini" => $absensihariini,
