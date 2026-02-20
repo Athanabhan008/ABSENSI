@@ -425,41 +425,27 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        // Bersihkan history sebelumnya
+        // Hapus semua history sebelumnya
         history.replaceState(null, null, location.href);
 
-        // Tambahkan dummy state
+        // Tambah dummy state
         history.pushState(null, null, location.href);
 
         window.addEventListener("popstate", function () {
 
-            // Paksa kembali ke halaman login
-            history.pushState(null, null, location.href);
-
-            // Konfirmasi keluar
-            if (confirm("Keluar dari aplikasi?")) {
-
-                // Android WebView
-                if (navigator.app && navigator.app.exitApp) {
-                    navigator.app.exitApp();
-                }
-
-                // Chrome Android PWA
-                else if (window.Android) {
-                    Android.exitApp();
-                }
-
-                // Browser biasa
-                else {
-                    window.open('', '_self');
-                    window.close();
-                }
+            // Jika di Android WebView
+            if (navigator.app && navigator.app.exitApp) {
+                navigator.app.exitApp();
+            }
+            // Jika di browser biasa
+            else {
+                window.location.href = "about:blank";
             }
 
         });
 
     });
-</script>
+    </script>
 
 
 </body>
