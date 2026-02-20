@@ -13,6 +13,8 @@ use App\Models\Vwizinsakit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Str;
 
 class CutiSakitController extends Controller
@@ -77,13 +79,27 @@ class CutiSakitController extends Controller
 
         // upload surat dokter
         if ($request->hasFile('foto_surat')) {
-            $imageName = time().'_'.Str::random(10).'.'.$request->file('foto_surat')->extension();
 
-            $request->file('foto_surat')->storeAs(
-                'uploads/surat_sakit',
-                $imageName,
-                'public'
-            );
+            $file = $request->file('foto_surat');
+
+            $imageName = time().'_'.Str::random(10).'.jpg';
+
+            $manager = new ImageManager(new Driver());
+
+            $image = $manager->read($file);
+
+            // resize biar ringan
+            $image->scale(width: 1000);
+
+            $path = storage_path('app/public/uploads/surat_sakit/'.$imageName);
+
+            $quality = 90;
+
+            do {
+                $image->toJpeg($quality)->save($path);
+                $size = filesize($path);
+                $quality -= 5;
+            } while ($size > 50000 && $quality > 10);
 
             $sakit->foto_surat = $imageName;
         }
