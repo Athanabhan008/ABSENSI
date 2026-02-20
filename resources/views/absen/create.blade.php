@@ -33,6 +33,7 @@
         display: block;
         width: 100% !important;
         height: auto !important;
+        transform: scaleX(1) !important;
         border-radius: 0;
     }
 
@@ -144,7 +145,8 @@
         height: 480,
         width: 640,
         image_format: 'jpeg',
-        jpeg_quality: 80
+        jpeg_quality: 80,
+        flip_horiz: false
         });
 
         Webcam.attach('.webcam-capture');

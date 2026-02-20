@@ -55,6 +55,10 @@
     color: #ff4d4d;
 }
 
+.list-container{
+    padding-bottom: calc(100px + env(safe-area-inset-bottom));
+}
+
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
@@ -90,7 +94,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row list-container">
     <div class="col">
         @foreach($dataizin as $item)
        <ul class="listview image-listview">
