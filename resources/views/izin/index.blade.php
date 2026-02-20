@@ -104,8 +104,8 @@
                              ({{ $item->status }})</b><br>
                         <small class="text-muted">{{ $item->keterangan }}</small>
                     </div>
-                    <a href="javascript:void(0)" class="preview-link" onclick="openPreview('{{ asset('storage/uploads/surat_sakit/'.$item->foto_surat) }}')">
-                     <img src="{{ asset('storage/uploads/surat_sakit/'.$item->foto_surat) }}" class="preview-thumb">
+                    <a href="javascript:void(0)" class="preview-link" onclick="openPreview('{{ asset('uploads/surat_sakit/'.$item->foto_surat) }}')">
+                     <img src="{{ asset('uploads/surat_sakit/'.$item->foto_surat) }}" class="preview-thumb">
                     </a>
                     <div id="imagePreviewModal" class="preview-modal" onclick="closePreview()">
                         <span class="preview-close" onclick="event.stopPropagation(); closePreview()">&times;</span>
