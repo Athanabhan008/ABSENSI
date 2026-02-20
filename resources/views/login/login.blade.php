@@ -425,31 +425,41 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
 
-        // Push dummy state agar tombol back bisa dideteksi
+        // Bersihkan history sebelumnya
+        history.replaceState(null, null, location.href);
+
+        // Tambahkan dummy state
         history.pushState(null, null, location.href);
 
         window.addEventListener("popstate", function () {
 
-            // Konfirmasi keluar (opsional)
+            // Paksa kembali ke halaman login
+            history.pushState(null, null, location.href);
+
+            // Konfirmasi keluar
             if (confirm("Keluar dari aplikasi?")) {
 
-                // Jika di Android WebView
-                if (navigator.app) {
+                // Android WebView
+                if (navigator.app && navigator.app.exitApp) {
                     navigator.app.exitApp();
                 }
-                // Jika di browser biasa
-                else {
-                    window.close();
+
+                // Chrome Android PWA
+                else if (window.Android) {
+                    Android.exitApp();
                 }
 
-            } else {
-                history.pushState(null, null, location.href);
+                // Browser biasa
+                else {
+                    window.open('', '_self');
+                    window.close();
+                }
             }
 
         });
 
     });
-    </script>
+</script>
 
 
 </body>
