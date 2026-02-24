@@ -64,7 +64,7 @@ Route::middleware(['UserAkses:superadmin,admin'])->group(function() {
     //PROFILE
     Route::get('/profile',                                [ProfileController::class, 'index']);
     Route::post('/profile/updateprofile/{id}',            [ProfileController::class, 'updateprofile']);
-    Route::get('/absen/histori',                          [AbsensiController::class, 'histori'])->name('absen.histori');
+    Route::get('/histori',                                [AbsensiController::class, 'histori'])->name('absen.histori');
     Route::get('/izin_sakit',                             [CutiSakitController::class, 'index']);
     Route::get('/izin_sakit/create',                      [CutiSakitController::class, 'create']);
     Route::post('/izin_sakit/store',                      [CutiSakitController::class, 'store']);

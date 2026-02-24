@@ -32,7 +32,7 @@
             <strong>Home</strong>
         </div>
     </a>
-    <a href="absen/histori" class="item {{ ($active === "histori") ? 'active' : '' }}">
+    <a href="/histori" class="item {{ ($active === "histori") ? 'active' : '' }}">
         <div class="col">
             <ion-icon name="calendar-outline" role="img" class="md hydrated"
                 aria-label="calendar outline"></ion-icon>
