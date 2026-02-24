@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Storage;
 </div>
  <!-- App Header -->
 
- <div class="row" style="margin-top: 65px">
+ <div class="row" style="margin-top: 60px">
     <div class="col">
         <div class="row">
             <div class="col-12">
