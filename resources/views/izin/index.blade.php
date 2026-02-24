@@ -55,8 +55,12 @@
     color: #ff4d4d;
 }
 
+:root{
+    --bottom-safe: calc(80px + env(safe-area-inset-bottom));
+}
+
 .list-container{
-    padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    padding-bottom: calc(var(--bottom-safe) + 100px);
 }
 
 </style>
