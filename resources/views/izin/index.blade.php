@@ -98,7 +98,7 @@
     </div>
 </div>
 
-<div class="row list-container">
+<div class="row list-container" style="margin-top: 70px">
     <div class="col">
         @foreach($dataizin as $item)
        <ul class="listview image-listview">
