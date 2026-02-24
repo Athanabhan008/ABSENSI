@@ -151,6 +151,14 @@
 
         Webcam.attach('.webcam-capture');
 
+                // FORCE remove mirror
+        setTimeout(() => {
+            const video = document.querySelector('.webcam-capture video');
+            if(video){
+                video.style.transform = "scaleX(1)";
+            }
+        }, 500);
+
         window.addEventListener('beforeunload', function () {
         try {
             Webcam.reset();
