@@ -33,8 +33,11 @@
         display: block;
         width: 100% !important;
         height: auto !important;
-        transform: scaleX(1) !important;
         border-radius: 0;
+    }
+    /* Preview seperti kamera selfie (mirror) */
+    .webcam-capture video{
+        transform: scaleX(-1) !important;
     }
 
     /* make webcam area look like a frame */
@@ -142,22 +145,13 @@
         var image = null;
 
         Webcam.set({
-        height: 480,
-        width: 640,
-        image_format: 'jpeg',
-        jpeg_quality: 80,
-        flip_horiz: false
+            width: 640,
+            height: 480,
+            image_format: 'jpeg',
+            jpeg_quality: 90,
+            flip_horiz: false
         });
-
         Webcam.attach('.webcam-capture');
-
-                // FORCE remove mirror
-        setTimeout(() => {
-            const video = document.querySelector('.webcam-capture video');
-            if(video){
-                video.style.transform = "scaleX(1)";
-            }
-        }, 500);
 
         window.addEventListener('beforeunload', function () {
         try {
