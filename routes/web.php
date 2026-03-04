@@ -46,7 +46,7 @@ Route::get('/home', function () {
 })->name('home');
 // Route::get('/error',[SesiController::class, 'error']);
 
-Route::middleware(['UserAkses:superadmin,admin'])->group(function() {
+Route::middleware(['UserAkses:superadmin,admin,staff'])->group(function() {
 
     //DASHBOARD MANAGER
     Route::get('/dashboard',          [ManagerController::class, 'index'])->middleware('auth');
