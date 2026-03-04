@@ -21,7 +21,8 @@ class CutiController extends Controller
     {
         $cuti = Vwcuti::all();
         return view('cuti.index', [
-            'cuti' => $cuti
+            'cuti' => $cuti,
+            "active" => 'cuti'
         ]);
     }
 

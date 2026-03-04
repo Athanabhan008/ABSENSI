@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Absen;
 use App\Models\Izinsakit;
 use App\Models\Vwcountcutitoday;
 use Illuminate\Http\Request;
@@ -31,6 +32,7 @@ class DashboardController extends Controller
             'rekappresensi' => $rekappresensi,
             'rekapcuti' => $rekapcuti,
             'rekapsakit' => $rekapsakit,
+            "active" => 'dashboard'
 
         ]);
     }
@@ -54,6 +56,18 @@ class DashboardController extends Controller
         $id = $request->id;
         $absensi = DB::table('absens')->where('id', $id)->first();
         return view('admin.getmap',compact('absensi'));
+    }
+
+    public function approve(Request $request, $id)
+    {
+        $absen                                  = Absen::find($id);
+        $absen->status_approve                  = $request->status_approve;
+        $absen->save();
+
+        return response()->json([
+        'success' => true,
+        'message' => 'Status berhasil diubah'
+        ]);
     }
 
 }

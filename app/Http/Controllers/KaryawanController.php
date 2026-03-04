@@ -19,12 +19,15 @@ class KaryawanController extends Controller
         $karyawan = User::all();
         return view('karyawan.index', [
             'karyawan' => $karyawan,
+            "active" => 'karyawan'
         ]);
     }
 
     public function create()
     {
-        return view('karyawan.create');
+        return view('karyawan.create', [
+             "active" => 'karyawan'
+        ]);
     }
 
     public function store(Request $request)

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
+use App\Models\Sakit;
 use App\Models\Vwizinsakit;
 
 class IzinsakitController extends Controller
@@ -20,13 +21,14 @@ class IzinsakitController extends Controller
     {
         $izinsakit = Vwizinsakit::all();
         return view('izinsakit.index', [
-            'izinsakit' => $izinsakit
+            'izinsakit' => $izinsakit,
+            "active" => 'sakit'
         ]);
     }
 
     public function approve(Request $request, $id)
     {
-        $izinsakit                                  = Izinsakit::find($id);
+        $izinsakit                                  = Sakit::find($id);
         $izinsakit->status_approve                  = $request->status_approve;
         $izinsakit->save();
 

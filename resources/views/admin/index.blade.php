@@ -2,221 +2,178 @@
 
 @section('content')
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
+<style>
+    /* Thumbnail */
+.preview-thumb {
+    width: 100px;
+    height: auto;
+    cursor: pointer;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.3);
+    transition: transform .2s;
+}
 
-    <main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
-      <!-- Navbar -->
-      <nav class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all ease-in shadow-none duration-250 rounded-2xl lg:flex-nowrap lg:justify-start" navbar-main navbar-scroll="false">
-        <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
-          <nav>
-            <!-- breadcrumb -->
-            <ol class="flex flex-wrap pt-1 mr-12 bg-transparent rounded-lg sm:mr-16">
-              <li class="text-sm leading-normal">
-                <a class="text-white opacity-50" href="javascript:;">Pages</a>
-              </li>
-              <li class="text-sm pl-2 capitalize leading-normal text-white before:float-left before:pr-2 before:text-white before:content-['/']" aria-current="page">Dashboard</li>
-            </ol>
-            <h6 class="mb-0 font-bold text-white capitalize">Dashboard</h6>
-          </nav>
+.preview-thumb:hover {
+    transform: scale(1.05);
+}
 
-          <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
-            <div class="flex items-center md:ml-auto md:pr-4">
-              <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease">
-                <span class="text-sm ease leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-slate-500 transition-all">
-                  <i class="fas fa-search"></i>
-                </span>
-                <input type="text" class="pl-9 text-sm focus:shadow-primary-outline ease w-1/100 leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 dark:bg-slate-850 dark:text-white bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:transition-shadow" placeholder="Type here..." />
-              </div>
-            </div>
-            <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
-              <li class="flex items-center">
-                <a href="admin/build/pages/sign-in.html" class="block px-0 py-2 text-sm font-semibold text-white transition-all ease-nav-brand">
-                  <i class="fa fa-user sm:mr-1"></i>
-                  <span class="hidden sm:inline">Sign In</span>
-                </a>
-              </li>
-              <li class="flex items-center pl-4 xl:hidden">
-                <a href="javascript:;" class="block p-0 text-sm text-white transition-all ease-nav-brand" sidenav-trigger>
-                  <div class="w-4.5 overflow-hidden">
-                    <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i>
-                    <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i>
-                    <i class="ease relative block h-0.5 rounded-sm bg-white transition-all"></i>
-                  </div>
-                </a>
-              </li>
-              <li class="flex items-center px-4">
-                <a href="javascript:;" class="p-0 text-sm text-white transition-all ease-nav-brand">
-                  <i fixed-plugin-button-nav class="cursor-pointer fa fa-cog"></i>
-                  <!-- fixed-plugin-button-nav  -->
-                </a>
-              </li>
+/* Modal background */
+.preview-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.9);
+}
 
-              <!-- notifications -->
+/* Full image */
+.preview-content {
+    display: block;
+    margin: auto;
+    max-width: 90%;
+    max-height: 90%;
+    margin-top: 3%;
+    border-radius: 6px;
+    margin-top: 50px;
+}
 
-              <li class="relative flex items-center pr-2">
-                <p class="hidden transform-dropdown-show"></p>
-                <a href="javascript:;" class="block p-0 text-sm text-white transition-all ease-nav-brand" dropdown-trigger aria-expanded="false">
-                  <i class="cursor-pointer fa fa-bell"></i>
-                </a>
+/* Close button (X) */
+.preview-close {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    color: #fff;
+    font-size: 35px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+}
 
-                <ul dropdown-menu class="text-sm transform-dropdown before:font-awesome before:leading-default before:duration-350 before:ease lg:shadow-3xl duration-250 min-w-44 before:sm:right-8 before:text-5.5 pointer-events-none absolute right-0 top-0 z-50 origin-top list-none rounded-lg border-0 border-solid border-transparent dark:shadow-dark-xl dark:bg-slate-850 bg-white bg-clip-padding px-2 py-4 text-left text-slate-500 opacity-0 transition-all before:absolute before:right-2 before:left-auto before:top-0 before:z-50 before:inline-block before:font-normal before:text-white before:antialiased before:transition-all before:content-['\f0d8'] sm:-mr-6 lg:absolute lg:right-0 lg:left-auto lg:mt-2 lg:block lg:cursor-pointer">
-                  <!-- add show class on dropdown open js -->
-                  <li class="relative mb-2">
-                    <a class="dark:hover:bg-slate-900 ease py-1.2 clear-both block w-full whitespace-nowrap rounded-lg bg-transparent px-4 duration-300 hover:bg-gray-200 hover:text-slate-700 lg:transition-colors" href="javascript:;">
-                      <div class="flex py-1">
-                        <div class="my-auto">
-                          <img src="admin/build/assets/img/team-2.jpg" class="inline-flex items-center justify-center mr-4 text-sm text-white h-9 w-9 max-w-none rounded-xl" />
-                        </div>
-                        <div class="flex flex-col justify-center">
-                          <h6 class="mb-1 text-sm font-normal leading-normal dark:text-white"><span class="font-semibold">New message</span> from Laur</h6>
-                          <p class="mb-0 text-xs leading-tight text-slate-400 dark:text-white/80">
-                            <i class="mr-1 fa fa-clock"></i>
-                            13 minutes ago
-                          </p>
-                        </div>
+.preview-close:hover {
+    color: #ff4d4d;
+}
+
+.link-menu{
+    text-decoration: none;
+}
+
+.datepicker table {
+    margin: 5px;
+}
+
+.datepicker table tr td,
+.datepicker table tr th {
+    width: 42px;
+    height: 42px;
+    line-height: 42px;
+    border-radius: 6px;
+    margin: 2px;
+}
+.datepicker table tr td.active {
+    background: #0d6efd;
+    border-radius: 3px;
+}
+</style>
+
+<!--
+=========================================================
+* Soft UI Dashboard 3 - v1.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
+* Copyright 2024 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-lg-12 col-12">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-12">
+              <div class="card">
+                <span class="mask bg-success opacity-10 border-radius-lg"></span>
+                <div class="card-body p-3 position-relative">
+                  <div class="row">
+                    <div class="col-8 text-start">
+                      <div class="icon icon-shape bg-white shadow text-center border-radius-2xl">
+                        <i class="fa-solid fa-people-group text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
                       </div>
-                    </a>
-                  </li>
-
-                  <li class="relative mb-2">
-                    <a class="dark:hover:bg-slate-900 ease py-1.2 clear-both block w-full whitespace-nowrap rounded-lg px-4 transition-colors duration-300 hover:bg-gray-200 hover:text-slate-700" href="javascript:;">
-                      <div class="flex py-1">
-                        <div class="my-auto">
-                          <img src="admin/build/assets/img/small-logos/logo-spotify.svg" class="inline-flex items-center justify-center mr-4 text-sm text-white bg-gradient-to-tl from-zinc-800 to-zinc-700 dark:bg-gradient-to-tl dark:from-slate-750 dark:to-gray-850 h-9 w-9 max-w-none rounded-xl" />
-                        </div>
-                        <div class="flex flex-col justify-center">
-                          <h6 class="mb-1 text-sm font-normal leading-normal dark:text-white"><span class="font-semibold">New album</span> by Travis Scott</h6>
-                          <p class="mb-0 text-xs leading-tight text-slate-400 dark:text-white/80">
-                            <i class="mr-1 fa fa-clock"></i>
-                            1 day
-                          </p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-
-                  <li class="relative">
-                    <a class="dark:hover:bg-slate-900 ease py-1.2 clear-both block w-full whitespace-nowrap rounded-lg px-4 transition-colors duration-300 hover:bg-gray-200 hover:text-slate-700" href="javascript:;">
-                      <div class="flex py-1">
-                        <div class="inline-flex items-center justify-center my-auto mr-4 text-sm text-white transition-all duration-200 ease-nav-brand bg-gradient-to-tl from-slate-600 to-slate-300 h-9 w-9 rounded-xl">
-                          <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-                            <title>credit-card</title>
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                              <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
-                                <g transform="translate(1716.000000, 291.000000)">
-                                  <g transform="translate(453.000000, 454.000000)">
-                                    <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                    <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
-                                  </g>
-                                </g>
-                              </g>
-                            </g>
-                          </svg>
-                        </div>
-                        <div class="flex flex-col justify-center">
-                          <h6 class="mb-1 text-sm font-normal leading-normal dark:text-white">Payment successfully completed</h6>
-                          <p class="mb-0 text-xs leading-tight text-slate-400 dark:text-white/80">
-                            <i class="mr-1 fa fa-clock"></i>
-                            2 days
-                          </p>
-                        </div>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-
-      <!-- end Navbar -->
-
-      <!-- cards -->
-      <div class="w-full px-6 py-6 mx-auto">
-        <!-- row 1 -->
-        <div class="flex flex-wrap -mx-3">
-          <!-- card1 -->
-          <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-              <div class="flex-auto p-4">
-                <div class="flex flex-row -mx-3">
-                  <div class="flex-none w-2/3 max-w-full px-3">
-                    <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Karyawan Hadir</p>
-                      <h5 class="mb-2 font-bold dark:text-white">{{ $rekappresensi->jmlhadir }}</h5>
+                      <h5 class="text-white font-weight-bolder mb-0 mt-3">
+                        {{ $rekappresensi->jmlhadir }}
+                      </h5>
+                      <span class="text-white text-sm">Karyawan Hadir</span>
                     </div>
                   </div>
-                  <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-circle bg-gradient-to-tl from-emerald-500 to-teal-400">
-                      <i class="ni leading-none ni-money-coins text-lg relative top-3.5 text-white"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-12 mt-4 mt-md-0">
+              <div class="card">
+                <span class="mask bg-danger opacity-10 border-radius-lg"></span>
+                <div class="card-body p-3 position-relative">
+                  <div class="row">
+                    <div class="col-8 text-start">
+                      <div class="icon icon-shape bg-white shadow text-center border-radius-2xl">
+                        <i class="fa-regular fa-clock text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
+                      </div>
+                      <h5 class="text-white font-weight-bolder mb-0 mt-3">
+                        {{ $rekappresensi->jmlterlambat }}
+                      </h5>
+                      <span class="text-white text-sm">Karyawan Terlambat</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- card2 -->
-          <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-              <div class="flex-auto p-4">
-                <div class="flex flex-row -mx-3">
-                  <div class="flex-none w-2/3 max-w-full px-3">
-                    <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Karyawan Cuti</p>
-                      @foreach ($rekapcuti as $item)
-                      <h5 class="mb-2 font-bold dark:text-white">{{ $item->jmlcutitoday }}</h5>
-                      @endforeach
-                    </div>
-                  </div>
-                  <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-circle bg-gradient-to-tl from-blue-500 to-violet-500 ">
-                      <i class="ni leading-none ni-world text-lg relative top-3.5 text-white"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- card3 -->
-          <div class="w-full max-w-full px-3 mb-6 sm:w-1/2 sm:flex-none xl:mb-0 xl:w-1/4">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-              <div class="flex-auto p-4">
-                <div class="flex flex-row -mx-3">
-                  <div class="flex-none w-2/3 max-w-full px-3">
-                    <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Karyawan Sakit</p>
-                      @foreach ($rekapsakit as $item)
-                      <h5 class="mb-2 font-bold dark:text-white">{{ $item->jmlsakittoday }}</h5>
-                      @endforeach
-                    </div>
-                  </div>
-                  <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-circle bg-gradient-to-tl from-orange-500 to-yellow-500">
-                      <i class="ni leading-none ni-paper-diploma text-lg relative top-3.5 text-white"></i>
+          <div class="row mt-4">
+            <div class="col-lg-6 col-md-6 col-12">
+              <div class="card">
+                <span class="mask bg-primary opacity-10 border-radius-lg"></span>
+                <div class="card-body p-3 position-relative">
+                  <div class="row">
+                    <div class="col-8 text-start">
+                      <div class="icon icon-shape bg-white shadow text-center border-radius-2xl">
+                        <i class="fa-regular fa-calendar-check text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
+                      </div>
+                      <h5 class="text-white font-weight-bolder mb-0 mt-3">
+                        @foreach ($rekapcuti as $item)
+                        <h5 class="mb-2 font-bold dark:text-white">{{ $item->jmlcutitoday }}</h5>
+                        @endforeach
+                      </h5>
+                      <span class="text-white text-sm">Karyawan Cuti</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- card4 -->
-          <div class="w-full max-w-full px-3 sm:w-1/2 sm:flex-none xl:w-1/4">
-            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-              <div class="flex-auto p-4">
-                <div class="flex flex-row -mx-3">
-                  <div class="flex-none w-2/3 max-w-full px-3">
-                    <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Karyawan Terlambat</p>
-                      <h5 class="mb-2 font-bold dark:text-white">{{ $rekappresensi->jmlterlambat }}</h5>
-                    </div>
-                  </div>
-                  <div class="px-3 text-right basis-1/3">
-                    <div class="inline-block w-12 h-12 text-center rounded-circle bg-gradient-to-tl from-red-600 to-orange-600">
-                      <i class="ni leading-none ni-cart text-lg relative top-3.5 text-white"></i>
+            <div class="col-lg-6 col-md-6 col-12 mt-4 mt-md-0">
+              <div class="card">
+                <span class="mask bg-warning opacity-10 border-radius-lg"></span>
+                <div class="card-body p-3 position-relative">
+                  <div class="row">
+                    <div class="col-8 text-start">
+                      <div class="icon icon-shape bg-white shadow text-center border-radius-2xl">
+                        <i class="fa-regular fa-face-tired text-dark text-gradient text-lg opacity-10" aria-hidden="true"></i>
+                      </div>
+                      <h5 class="text-white font-weight-bolder mb-0 mt-3">
+                        @foreach ($rekapsakit as $item)
+                        <h5 class="mb-2 font-bold dark:text-white">{{ $item->jmlsakittoday }}</h5>
+                        @endforeach
+                      </h5>
+                      <span class="text-white text-sm">Karyawan Sakit</span>
                     </div>
                   </div>
                 </div>
@@ -224,54 +181,56 @@
             </div>
           </div>
         </div>
-
-        <div class="w-full p-6 mx-auto">
-            <div class="flex flex-wrap -mx-3">
-              <div class="w-full max-w-full px-3 shrink-0 md:w-12/12 md:flex-0">
-                <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border" style="filter: drop-shadow(0 0 0.75rem rgb(0, 0, 0)); margin-top: 20px;">
-                  <div class="border-black/12.5 rounded-t-2xl border-b-0 border-solid p-6 pb-0">
-                  </div>
-                  <div class="flex-auto p-6">
-                    <div class="flex flex-wrap -mx-3">
-                      <div class="w-full max-w-full px-3 shrink-0 md:w-12/12 md:flex-0">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="basic-addon1"><i class="fa-regular fa-calendar"></i></span>
-                            <input type="text" name="periode_start" id="periode_start" value="{{ date("Y-m-d") }}" class="form-control form-control-lg pl-3 tanggal" placeholder="Pilih Bulan (YYYY-MM-DD)" autocomplete="off" value="{{ $periode_start ?? '' }}" aria-describedby="basic-addon1">
-                          </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="flex-auto px-0 pt-0 pb-2">
-                    <div class="p-0 overflow-x-auto">
-                      <table class="items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
-                        <thead class="align-bottom">
-                          <tr>
-                            <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">No</th>
-                            <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Nama</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Jam Masuk</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Foto</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Jam Pulang</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Foto</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Keterangan</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Map</th>
-                          </tr>
-                        </thead>
-                        <tbody id="loadabsensi"></tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
       </div>
-      <!-- end cards -->
-    </main>
 
+      <div class="row mt-4">
+        <div class="col-lg-12 mb-lg-0 mb-4">
+          <div class="card">
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="d-flex flex-column h-100">
 
-    <!-- Modal -->
-<div class="modal fade" id="modal-map" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="basic-addon1"><i class="fa-regular fa-calendar"></i></span>
+                        <input type="text" name="periode_start" id="periode_start" value="{{ date("Y-m-d") }}" class="form-control form-control-lg pl-3 tanggal" placeholder="Pilih Bulan (YYYY-MM-DD)" autocomplete="off" value="{{ $periode_start ?? '' }}" aria-describedby="basic-addon1">
+                    </div>
+
+                    <div class="flex-auto px-0 pt-0 pb-2">
+                        <div class="p-0 overflow-x-auto">
+                          <table class="items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
+                            <thead class="align-bottom">
+                              <tr>
+                                <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">No</th>
+                                <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Nama</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Jam Masuk</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Foto Masuk</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Jam Pulang</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Foto Pulang</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Keterangan</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Map</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Status Approve</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70 text-center">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody id="loadabsensi"></tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="modal fade" id="modal-map" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -293,61 +252,158 @@
     <img class="preview-content" id="previewImage" alt="Surat Sakit">
 </div>
 
-    @push('scripts')
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-  <script src="../../admin/assets/js/plugins/bootstrap-datepicker.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
+<!-- Modal -->
+<div class="modal fade" id="modal-approval" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Approval Absensi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="form-approve-absen" action="/absen/approve/" method="POST">
+                @csrf
+                <input type="hidden" name="id" id="approve_absen_id" value="">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <select name="status_approve" id="status_approve" class="form-select">
+                                <option value="#">--- Pilih Approval ---</option>
+                                <option value="1">Approve</option>
+                                <option value="2">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+@push('scripts')
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="../../admin/assets/js/plugins/bootstrap-datepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
 
 
 <script>
-    function openPreview(src) {
-        const modal = document.getElementById('previewModal');
-        const image = document.getElementById('previewImage');
-        image.src = src;
-        modal.style.display = 'block';
-    }
+  function openPreview(src) {
+      const modal = document.getElementById('previewModal');
+      const image = document.getElementById('previewImage');
+      image.src = src;
+      modal.style.display = 'block';
+  }
 
-    function closePreview(event) {
-        // Prevent closing when clicking the image itself
-        if (event && event.target && event.target.id === 'previewImage') return;
-        document.getElementById('previewModal').style.display = 'none';
-    }
+  function closePreview(event) {
+      // Prevent closing when clicking the image itself
+      if (event && event.target && event.target.id === 'previewImage') return;
+      document.getElementById('previewModal').style.display = 'none';
+  }
 </script>
 
 <script>
-  $(document).ready(function () {
-    $('.tanggal').datepicker({
-      format: "yyyy-mm-dd",
-      minViewMode: "days",
-      startView: "days",
-      todayHighlight: true,
-      autoclose: true
+$(document).ready(function () {
+  $('.tanggal').datepicker({
+    format: "yyyy-mm-dd",
+    minViewMode: "days",
+    startView: "days",
+    autoclose: true
+  });
+
+  window.loadabsensi = function(){
+      var tanggal = $('.tanggal').val();
+      $.ajax({
+          type: 'POST',
+          url: '/getabsensi',
+          data: {
+              _token: "{{ csrf_token() }}",
+              tanggal : tanggal
+          },
+          cache:false,
+          success: function(respond) {
+              $("#loadabsensi").html(respond);
+          }
+      })
+  }
+
+  $('.tanggal').change(function(e){
+      loadabsensi();
+  })
+  loadabsensi();
+});
+
+
+  // Set id saat modal dibuka dari tombol Approval
+  document.getElementById('modal-approval').addEventListener('show.bs.modal', function (e) {
+        var btn = e.relatedTarget;
+        if (btn && btn.classList.contains('btn-approve') && btn.dataset.id) {
+            var id = btn.dataset.id;
+            document.getElementById('approve_absen_id').value = id;
+            document.getElementById('form-approve-absen').action = '/absen/approve/' + id;
+        }
     });
 
-    function loadabsensi(){
-        var tanggal = $('.tanggal').val();
-        $.ajax({
-            type: 'POST',
-            url: '/getabsensi',
-            data: {
-                _token: "{{ csrf_token() }}",
-                tanggal : tanggal
-            },
-            cache:false,
-            success: function(respond) {
-                $("#loadabsensi").html(respond);
-            }
-        })
-    }
+    document.getElementById('form-approve-absen').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-    $('.tanggal').change(function(e){
-        loadabsensi();
+    let form = this;
+    let formData = new FormData(form);
+
+    fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
     })
-    loadabsensi();
-  });
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.success) {
+
+
+            let modalEl = document.getElementById('modal-approval');
+            let modal = bootstrap.Modal.getInstance(modalEl);
+            if (modal) modal.hide();
+
+
+            document.body.classList.remove('modal-open');
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: data.message,
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+
+            loadabsensi();
+
+        } else {
+            Swal.fire('Error', 'Gagal update', 'error');
+        }
+
+    })
+    .catch(() => {
+        Swal.fire('Error', 'Terjadi kesalahan server', 'error');
+    });
+});
+
 </script>
- @endpush
+@endpush
+
 
 @endsection

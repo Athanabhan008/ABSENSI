@@ -59,7 +59,7 @@ class AbsensiController extends Controller
         }
 
         // aturan jam dan status
-        $batasMasuk  = "11:05:00";
+        $batasMasuk  = "08:10:00";
         $batasPulang = "17:00:00";
         $isTelatMasuk = ($cek == 0 && $jam_masuk > $batasMasuk);
         $isPulangCepat = ($cek > 0 && $jam_masuk < $batasPulang);
@@ -78,15 +78,35 @@ class AbsensiController extends Controller
         $image_base64 = base64_decode($image_parts[1]);
         $fileName = $formatName . ".png";
         $file = $folderPath . $fileName;
+        $status = $isTelatMasuk ? 'telat' : 'hadir';
+
+        // hitung jumlah telat sebelumnya
+        $totalTelat = DB::table('absens')
+            ->where('id_user', $id_user)
+            ->where('status', 'telat')
+            ->count();
+
+        // tentukan status approve
+        if ($status == 'hadir') {
+            $statusApprove = 'approve';
+        } else {
+            // jika telat dan sudah 4 kali atau lebih
+            if (($totalTelat + 1) >= 4) {
+                $statusApprove = 0;
+            } else {
+                $statusApprove = 1;
+            }
+        }
+
         $data = [
-            'id_user'       => $id_user,
-            'tgl_absen'     => $tgl_absen,
-            'jam_masuk'     => $jam_masuk,
-            'lokasi_masuk'  => $lokasi,
-            'foto_masuk'    => $fileName,
-            // status hadir / telat hanya saat absen masuk
-            'status'        => $isTelatMasuk ? 'telat' : 'hadir',
-            'keterangan'    => $keterangan,
+            'id_user'         => $id_user,
+            'tgl_absen'       => $tgl_absen,
+            'jam_masuk'       => $jam_masuk,
+            'lokasi_masuk'    => $lokasi,
+            'foto_masuk'      => $fileName,
+            'status'          => $status,
+            'status_approve'  => $statusApprove,
+            'keterangan'      => $keterangan,
         ];
 
         if ($cek > 0) {

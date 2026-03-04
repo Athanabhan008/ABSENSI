@@ -62,6 +62,7 @@ Route::middleware(['UserAkses:superadmin,admin'])->group(function() {
 
 
     //PROFILE
+    Route::post('/absen/approve/{id}',                    [DashboardController::class, 'approve'])->name('absen.approve');
     Route::get('/profile',                                [ProfileController::class, 'index']);
     Route::post('/profile/updateprofile/{id}',            [ProfileController::class, 'updateprofile']);
     Route::get('/histori',                                [AbsensiController::class, 'histori'])->name('absen.histori');

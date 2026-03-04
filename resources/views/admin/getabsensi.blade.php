@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Storage;
              $pathMasuk = Storage::url('uploads/absensi/' . $item->foto_masuk);
         ?>
           <a href="javascript:void(0)" class="preview-link" onclick="openPreview('{{ asset('storage/uploads/absensi/'.$item->foto_masuk) }}')">
-            <img src="{{ asset('storage/uploads/absensi/'.$item->foto_masuk) }}" class="preview-thumb">
+            <img src="{{ asset('storage/uploads/absensi/'.$item->foto_masuk) }}" class="preview-thumb" width="100px">
         </a>
     </td>
     <td style="text-align: center">{!! $item->jam_keluar != null ? $item->jam_keluar : '<span class="badge bg-danger">Belum Absen</span>' !!}</td>
@@ -40,7 +40,7 @@ use Illuminate\Support\Facades\Storage;
              $pathKeluar = Storage::url('uploads/absensi/' . $item->foto_keluar);
         ?>
          <a href="javascript:void(0)" class="preview-link" onclick="openPreview('{{ asset('storage/uploads/absensi/'.$item->foto_keluar) }}')">
-            <img src="{{ asset('storage/uploads/absensi/'.$item->foto_keluar) }}" class="preview-thumb">
+            <img src="{{ asset('storage/uploads/absensi/'.$item->foto_keluar) }}" class="preview-thumb" width="100px">
         </a>
         @else
         <i class="fa-solid fa-image fa-3x" ></i>
@@ -63,7 +63,38 @@ use Illuminate\Support\Facades\Storage;
             <i class="fa-solid fa-map fa-1x" style="color: white;"></i>
         </a>
     </td>
+    <td style="text-align:center">
+        @if($item->status_approve == 1)
+            <span class="badge bg-success">Approved</span>
+        @elseif($item->status_approve == 0)
+            <span class="badge bg-danger text-light">Need Approve</span>
+        @endif
+    </td>
+    <td style="text-align:center">
+        <button type="button" class="btn btn-primary btn-approve" data-bs-toggle="modal" data-bs-target="#modal-approval" data-id="{{ $item->id }}">
+            <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+    </td>
 </tr>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 @endforeach
 
