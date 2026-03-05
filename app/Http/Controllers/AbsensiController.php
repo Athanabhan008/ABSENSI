@@ -60,7 +60,7 @@ class AbsensiController extends Controller
 
         // aturan jam dan status
         $batasMasuk  = "08:10:00";
-        $batasPulang = "17:00:00";
+        $batasPulang = "16:30:00";
         $isTelatMasuk = ($cek == 0 && $jam_masuk > $batasMasuk);
         $isPulangCepat = ($cek > 0 && $jam_masuk < $batasPulang);
         $diLuarRadius = ($radius > 10);

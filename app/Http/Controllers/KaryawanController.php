@@ -46,7 +46,9 @@ class KaryawanController extends Controller
     public function edit($id)
     {
         $user = User::whereId($id)->first();
-        return view('karyawan.edit')->with('user', $user);
+        return view('karyawan.edit', [
+            "active" => 'karyawan'
+        ])->with('user', $user);
     }
     public function update(Request $request, $id)
     {
@@ -63,8 +65,11 @@ class KaryawanController extends Controller
     public function edit_password($id)
     {
         $user = User::whereId($id)->first();
-        return view('karyawan.edit_password')->with('user', $user);
+        return view('karyawan.edit_password', [
+             "active" => 'karyawan'
+        ])->with('user', $user);
     }
+
     public function update_password(Request $request, $id)
     {
         $user                                 = User::find($id);
@@ -72,6 +77,25 @@ class KaryawanController extends Controller
         $user->save();
 
         return redirect('/karyawan');
+    }
+
+    public function delete($id)
+    {
+        try {
+            $user = User::findOrFail($id);
+            $user->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
 }

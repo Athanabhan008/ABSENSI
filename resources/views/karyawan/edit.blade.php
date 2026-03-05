@@ -1,82 +1,86 @@
 @extends('layouts.template_admin')
 @section('content')
 
-<main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
-    <!-- Navbar -->
-    <nav class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all ease-in shadow-none duration-250 rounded-2xl lg:flex-nowrap lg:justify-start" navbar-main navbar-scroll="false">
-      <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
-        <nav>
-          <!-- breadcrumb -->
-          <ol class="flex flex-wrap pt-1 mr-12 bg-transparent rounded-lg sm:mr-16">
-            <li class="text-sm leading-normal">
-              <a class="text-white opacity-50" href="javascript:;">Pages</a>
-            </li>
-            <li class="text-sm pl-2 capitalize leading-normal text-white before:float-left before:pr-2 before:text-white before:content-['/']" aria-current="page">Tables</li>
-          </ol>
-          <h6 class="mb-0 font-bold text-white capitalize">Tables</h6>
-        </nav>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.bootstrap5.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.6/css/buttons.bootstrap5.css">
 
-        <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
-          <div class="flex items-center md:ml-auto md:pr-4">
-          </div>
-        </div>
-      </div>
-    </nav>
+<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
 
-    <div class="w-full p-6 mx-auto">
-        <div class="flex flex-wrap -mx-3">
-          <div class="w-full max-w-full px-3 shrink-0 md:w-12/12 md:flex-0">
-            <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-              <div class="border-black/12.5 rounded-t-2xl border-b-0 border-solid p-6 pb-0">
-                <div class="flex items-center">
-                  <p class="mb-0 dark:text-white/80">Form Karyawan</p>
-                </div>
-              </div>
-              <form action="{{  url('/karyawan/update')}}/{{ $user->id }}" method="POST">
-                @csrf
-              <div class="flex-auto p-6">
-                <p class="leading-normal uppercase dark:text-white dark:opacity-60 text-sm">User Information</p>
-                <div class="flex flex-wrap -mx-3">
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Role</span>
-                        <select class="form-control" name="role" aria-label="Username" aria-describedby="basic-addon1">
-                            <option value="#">-- Pilih Role --</option>
-                            <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="staff" {{ old('role', $user->role) == 'staff' ? 'selected' : '' }}>Staff</option>
-                            <option value="superadmin" {{ old('role', $user->role) == 'superadmin' ? 'selected' : '' }}>Super Admin</option>
-                        </select>
-                      </div>
-                  </div>
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Nama</span>
-                        <input type="text" class="form-control" aria-label="Username" name="name" aria-describedby="basic-addon1" value="{{ $user->name }}">
-                      </div>
-                  </div>
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0 mt-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">Email</span>
-                        <input type="email" class="form-control" name="email" aria-label="email" aria-describedby="basic-addon1" value="{{ $user->email }}">
-                      </div>
-                  </div>
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0 mt-4">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="basic-addon1">No. Handphone</span>
-                        <input type="text" class="form-control" name="no_hp" aria-label="Username" aria-describedby="basic-addon1" value="{{ $user->no_hp }}">
-                      </div>
+    <div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="card mb-4">
+              <div class="card-header pb-0">
+                  <h6>Ubah Data Karyawan</h6>
+            </div>
+            <div class="card-body px-4 pt-3 pb-3">
+              <div class="table-responsive p-0">
+
+                <form action="/karyawan/update/{{ $user->id }}" method="POST">
+                    @csrf
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1" style="background-color: rgb(209, 209, 209)">Role</span>
+                            <select class="form-control" name="role" aria-label="Username" aria-describedby="basic-addon1">
+                                <option value="{{ $user->role }}">{{ $user->role }}</option>
+                                <option value="admin">Admin</option>
+                                <option value="staff">Staff</option>
+                                <option value="superadmin">Super Admin</option>
+                            </select>
+                        </div>
                     </div>
+                </div>
 
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0 mt-4">
-                   <button id="btn_submit" type="submit" class="btn btn-success">Simpan</button>
-                  </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1" style="background-color: rgb(209, 209, 209)">Tanggal Masuk</span>
+                            <input type="date" class="form-control" aria-label="Username" name="tgl_masuk" aria-describedby="basic-addon1" value="{{ $user->tgl_masuk }}">
+                          </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1" style="background-color: rgb(209, 209, 209)">Nama Lengkap</span>
+                            <input type="text" class="form-control" placeholder="Username" name="name" aria-label="Username" aria-describedby="basic-addon1" value="{{ $user->name }}">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1" style="background-color: rgb(209, 209, 209)">Email</span>
+                            <input type="text" class="form-control" placeholder="Email" name="email" aria-label="Username" aria-describedby="basic-addon1" value="{{ $user->email }}">
+                          </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1" style="background-color: rgb(209, 209, 209)">No.Handphone</span>
+                            <input type="number" class="form-control" placeholder="No.handphone" name="no_hp" aria-label="Username" aria-describedby="basic-addon1" value="{{ $user->no_hp }}">
+                        </div>
+                    </div>
+                </div>
+                <a class="btn btn-secondary" href="{{ url()->previous() }}">Kembali</a>
+                <button class="btn btn-success" type="submit">Simpan</button>
+
+                </form>
                 </div>
               </div>
-            </form>
             </div>
           </div>
         </div>
       </div>
+
+
+    </div>
   </main>
+
+
+
 
 @endsection

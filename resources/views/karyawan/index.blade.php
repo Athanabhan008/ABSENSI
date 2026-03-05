@@ -33,9 +33,6 @@
                     <tr>
                       <td>
                         <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/team-2.jpg" class="avatar avatar-sm me-3" alt="user1">
-                          </div>
                           <div class="d-flex flex-column justify-content-center">
                             <h6 class="mb-0 text-sm">{{ $item->name }}</h6>
                             <p class="text-xs text-secondary mb-0">{{ $item->email }}</p>
@@ -53,13 +50,13 @@
                         <span class="text-secondary text-xs font-weight-bold">{{ $item->tgl_masuk }}</span>
                       </td>
                       <td class="align-middle" style="text-align: center;">
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user" style="text-decoration: none;">
+                        <a href="/karyawan/edit/{{ $item->id }}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user" style="text-decoration: none;">
                           Edit
                         </a>
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user" style="text-decoration: none; margin-left: 10px;">
+                       <a href="#" class="text-secondary font-weight-bold text-xs btn-hapus" data-url="/karyawan/delete/{{ $item->id }}" style="text-decoration: none; margin-left: 10px;">
                           Hapus
-                        </a>
-                        <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user" style="text-decoration: none; margin-left: 10px;">
+                       </a>
+                        <a href="/karyawan/edit-password/{{ $item->id }}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user" style="text-decoration: none; margin-left: 10px;">
                           Edit Password
                         </a>
                       </td>
@@ -89,6 +86,8 @@
   <script src="https://cdn.datatables.net/buttons/3.2.6/js/buttons.html5.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.2.6/js/buttons.print.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/3.2.6/js/buttons.colVis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   @push('scripts')
       <script>
@@ -97,6 +96,41 @@
     }
 });
       </script>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const tombolHapus = document.querySelectorAll(".btn-hapus");
+
+    tombolHapus.forEach(function(btn){
+        btn.addEventListener("click", function(e){
+            e.preventDefault();
+
+            let url = this.getAttribute("data-url");
+
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+
+        });
+    });
+
+});
+
+</script>
+      
   @endpush
 
 @endsection
