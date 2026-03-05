@@ -63,7 +63,7 @@ class AbsensiController extends Controller
         $batasPulang = "16:30:00";
         $isTelatMasuk = ($cek == 0 && $jam_masuk > $batasMasuk);
         $isPulangCepat = ($cek > 0 && $jam_masuk < $batasPulang);
-        $diLuarRadius = ($radius > 10);
+        $diLuarRadius = ($radius > 20);
 
         // kombinasi aturan: jika salah satu kondisi ini terjadi, keterangan wajib diisi
         if (($isTelatMasuk || $isPulangCepat || $diLuarRadius) && $keterangan === '') {
