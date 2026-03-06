@@ -75,7 +75,11 @@ class SesiController extends Controller
         if(Auth::attempt($infologin)){
             if (Auth::user()->role == 'superadmin'){
                 return redirect('/dashboard-admin');
-            }else{
+            }
+            elseif (Auth::user()->role == 'admin'){
+                return redirect('/dashboard-admin');
+            }
+            else{
                 Auth::logout();
                 return redirect('/panel-admin')->withErrors('Anda tidak memiliki akses ke halaman admin. Hanya Super Admin yang dapat login.')->withInput();
             }
@@ -83,9 +87,13 @@ class SesiController extends Controller
             return redirect('/panel-admin')->withErrors('Username Dan Password Yang Dimasukkan Tidak Sesuai')->withInput();
         }
     }
-    public function logout_admin()
-    {
-        Auth::logout();
-        return redirect('/panel-admin');
-    }
+    public function logout_admin(Request $request)
+{
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect('/panel-admin');
+}
 }

@@ -7,23 +7,16 @@ use Illuminate\Http\Request;
 
 class UserAkses
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     */
     public function handle(Request $request, Closure $next, ...$roles)
     {
-       if(auth()->user()->role == $roles){
-        return $next($request);
-       }
+        if (!auth()->check()) {
+            return redirect('/panel-admin');
+        }
 
         if (in_array(auth()->user()->role, $roles)) {
             return $next($request);
         }
 
-        return redirect('error');
+        return redirect('/error');
     }
 }

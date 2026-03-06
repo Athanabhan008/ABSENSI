@@ -74,7 +74,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link  " href="/logout">
+          <a class="nav-link  " href="/logout_admin">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fa-solid fa-arrow-right-from-bracket" style="color: black;"></i>
             </div>

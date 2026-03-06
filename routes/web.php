@@ -50,10 +50,7 @@ Route::middleware(['UserAkses:superadmin,admin,staff'])->group(function() {
 
     //DASHBOARD MANAGER
     Route::get('/dashboard',          [ManagerController::class, 'index'])->middleware('auth');
-    Route::get('/dashboard-admin',    [DashboardController::class, 'index'])->middleware('UserAkses:superadmin');
     Route::get('/karyawan',           [KaryawanController::class, 'index']);
-    Route::get('/izinsakit',          [IzinsakitController::class, 'index']);
-    Route::get('/cuti',               [CutiController::class, 'index']);
     Route::get('/admin',              [ManagerController::class, 'index']);
     Route::get('/absen',              [AbsensiController::class, 'index']);
     Route::post('/absen/store',       [AbsensiController::class, 'store']);
@@ -73,6 +70,13 @@ Route::middleware(['UserAkses:superadmin,admin,staff'])->group(function() {
     Route::post('/cuti/approve/{id}',                     [CutiController::class, 'approve']);
 });
 
+Route::middleware(['auth','UserAkses:superadmin,admin'])->group(function() {
+
+
+Route::get('/dashboard-admin',    [DashboardController::class, 'index']);
+Route::get('/izinsakit',          [IzinsakitController::class, 'index']);
+Route::get('/cuti',               [CutiController::class, 'index']);
+
 //KARYAWAN
 Route::get('/karyawan/create',                [KaryawanController::class, 'create']);
 Route::post('/karyawan/store',                [KaryawanController::class, 'store']);
@@ -80,7 +84,7 @@ Route::get('/karyawan/edit/{id}',             [KaryawanController::class, 'edit'
 Route::post('/karyawan/update/{id}',          [KaryawanController::class, 'update']);
 Route::get('/karyawan/edit-password/{id}',    [KaryawanController::class, 'edit_password']);
 Route::post('/karyawan/update-password/{id}', [KaryawanController::class, 'update_password']);
-
+});
 
 Route::get('/logout',                        [SesiController::class, 'logout']);
 Route::get('/logout_admin',                  [SesiController::class, 'logout_admin']);
