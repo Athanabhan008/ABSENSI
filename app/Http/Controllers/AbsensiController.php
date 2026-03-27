@@ -88,7 +88,7 @@ class AbsensiController extends Controller
 
         // tentukan status approve
         if ($status == 'hadir') {
-            $statusApprove = 'approve';
+            $statusApprove = 1;
         } else {
             // jika telat dan sudah 4 kali atau lebih
             if (($totalTelat + 1) >= 4) {

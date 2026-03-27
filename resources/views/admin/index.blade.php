@@ -1,5 +1,9 @@
 @extends('layouts.template_admin')
 
+@push('css')
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+@endpush
+
 @section('content')
 
 <style>
@@ -74,6 +78,7 @@
 }
 .datepicker table tr td.active {
     background: #0d6efd;
+    color: white;
     border-radius: 3px;
 }
 </style>
@@ -194,7 +199,7 @@
 
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="basic-addon1"><i class="fa-regular fa-calendar"></i></span>
-                        <input type="text" name="periode_start" id="periode_start" value="{{ date("Y-m-d") }}" class="form-control form-control-lg pl-3 tanggal" placeholder="Pilih Bulan (YYYY-MM-DD)" autocomplete="off" value="{{ $periode_start ?? '' }}" aria-describedby="basic-addon1">
+                        <input type="text" name="periode_start" id="periode_start" value="{{ $periode_start ?? date('Y-m-d') }}" class="form-control form-control-lg pl-3 tanggal" placeholder="Pilih Tanggal (YYYY-MM-DD)" autocomplete="off" aria-describedby="basic-addon1">
                     </div>
 
                     <div class="flex-auto px-0 pt-0 pb-2">
@@ -231,15 +236,13 @@
   </main>
 
   <div class="modal fade" id="modal-map" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="exampleModalLabel">Lokasi Absensi</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body" id="loadmap">
-          ...
-        </div>
+        <div class="modal-body" id="loadmap"></div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
@@ -289,7 +292,7 @@
 
 @push('scripts')
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="../../admin/assets/js/plugins/bootstrap-datepicker.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
@@ -316,7 +319,9 @@ $(document).ready(function () {
     format: "yyyy-mm-dd",
     minViewMode: "days",
     startView: "days",
-    autoclose: true
+    autoclose: true,
+    todayHighlight: true,
+    container: "body"
   });
 
   window.loadabsensi = function(){
@@ -339,6 +344,60 @@ $(document).ready(function () {
       loadabsensi();
   })
   loadabsensi();
+
+  function initDashboardAbsensiMap() {
+    var el = document.getElementById('mapAbsensi');
+    if (!el || typeof L === 'undefined') return;
+    var lat = parseFloat(el.dataset.lat);
+    var lng = parseFloat(el.dataset.lng);
+    if (isNaN(lat) || isNaN(lng)) return;
+    if (window._dashboardAbsensiMap) {
+      try { window._dashboardAbsensiMap.remove(); } catch (e) {}
+      window._dashboardAbsensiMap = null;
+    }
+    window._dashboardAbsensiMap = L.map(el).setView([lat, lng], 18);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(window._dashboardAbsensiMap);
+    L.marker([lat, lng]).addTo(window._dashboardAbsensiMap);
+    L.circle([-6.919080053798793, 107.7153742206726], {
+      color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.5,
+      radius: 20
+    }).addTo(window._dashboardAbsensiMap);
+    setTimeout(function () {
+      if (window._dashboardAbsensiMap) window._dashboardAbsensiMap.invalidateSize();
+    }, 200);
+  }
+
+  $(document).on('click', '.showmap', function (e) {
+    e.preventDefault();
+    var id = $(this).attr('id');
+    $.ajax({
+      type: 'POST',
+      url: '/showmap',
+      data: {
+        _token: "{{ csrf_token() }}",
+        id: id
+      },
+      cache: false,
+      success: function (respond) {
+        if (window._dashboardAbsensiMap) {
+          try { window._dashboardAbsensiMap.remove(); } catch (err) {}
+          window._dashboardAbsensiMap = null;
+        }
+        $('#loadmap').html(respond);
+        var modalEl = document.getElementById('modal-map');
+        var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalEl.addEventListener('shown.bs.modal', function () {
+          initDashboardAbsensiMap();
+        }, { once: true });
+        modal.show();
+      }
+    });
+  });
 });
 
 

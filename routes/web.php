@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\admin\CutiController;
+use App\Http\Controllers\admin\ReportabsenController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\SesiController;
@@ -49,13 +50,13 @@ Route::get('/home', function () {
 Route::middleware(['UserAkses:superadmin,admin,staff'])->group(function() {
 
     //DASHBOARD MANAGER
-    Route::get('/dashboard',          [ManagerController::class, 'index'])->middleware('auth');
-    Route::get('/karyawan',           [KaryawanController::class, 'index']);
-    Route::get('/admin',              [ManagerController::class, 'index']);
-    Route::get('/absen',              [AbsensiController::class, 'index']);
-    Route::post('/absen/store',       [AbsensiController::class, 'store']);
-    Route::post('/getabsensi',        [DashboardController::class, 'getabsensi']);
-    Route::post('/showmap',           [DashboardController::class, 'showmap']);
+    Route::get('/dashboard',                              [ManagerController::class, 'index'])->middleware('auth');
+    Route::get('/karyawan',                               [KaryawanController::class, 'index']);
+    Route::get('/admin',                                  [ManagerController::class, 'index']);
+    Route::get('/absen',                                  [AbsensiController::class, 'index']);
+    Route::post('/absen/store',                           [AbsensiController::class, 'store']);
+    Route::post('/getabsensi',                            [DashboardController::class, 'getabsensi']);
+    Route::post('/showmap',                               [DashboardController::class, 'showmap']);
 
 
     //PROFILE
@@ -73,20 +74,30 @@ Route::middleware(['UserAkses:superadmin,admin,staff'])->group(function() {
 Route::middleware(['auth','UserAkses:superadmin,admin'])->group(function() {
 
 
-Route::get('/dashboard-admin',    [DashboardController::class, 'index']);
-Route::get('/izinsakit',          [IzinsakitController::class, 'index']);
-Route::get('/cuti',               [CutiController::class, 'index']);
+Route::get('/dashboard-admin',                            [DashboardController::class, 'index']);
+Route::get('/izinsakit',                                  [IzinsakitController::class, 'index']);
+Route::get('/cuti',                                       [CutiController::class, 'index']);
+Route::get('/report_absen',                               [ReportabsenController::class, 'index']);
 
 //KARYAWAN
-Route::get('/karyawan/create',                [KaryawanController::class, 'create']);
-Route::post('/karyawan/store',                [KaryawanController::class, 'store']);
-Route::get('/karyawan/edit/{id}',             [KaryawanController::class, 'edit']);
-Route::post('/karyawan/update/{id}',          [KaryawanController::class, 'update']);
-Route::get('/karyawan/edit-password/{id}',    [KaryawanController::class, 'edit_password']);
-Route::post('/karyawan/update-password/{id}', [KaryawanController::class, 'update_password']);
+Route::get('/karyawan/datatable',                         [KaryawanController::class, 'datatable'])->name('karyawan/datatable');
+Route::post('/karyawan/datatable',                        [KaryawanController::class, 'datatable'])->name('create');
+Route::get('/karyawan/create',                            [KaryawanController::class, 'create'])->name('create');
+Route::post('/karyawan/create',                           [KaryawanController::class, 'create'])->name('create');
+Route::get('/karyawan/edit/{id}',                         [KaryawanController::class, 'edit']);
+Route::post('/karyawan/update/{id}',                      [KaryawanController::class, 'update']);
+Route::get('/karyawan/edit-password/{id}',                [KaryawanController::class, 'edit_password']);
+Route::post('/karyawan/update-password/{id}',             [KaryawanController::class, 'update_password']);
+
+//REPORT ABSEN
+Route::post('/report_absen/datatable',                                   [ReportabsenController::class, 'datatable'])->name('report_absen/datatable');
+Route::get('/report_absen/cetakpdf',                                     [ReportabsenController::class, 'cetakPDF'])->name('report_absen/cetakpdf');
+Route::post('/report_absen/cetakpdf',                                    [ReportabsenController::class, 'cetakPDF'])->name('report_absen/cetakpdf');
+
+
 });
 
-Route::get('/logout',                        [SesiController::class, 'logout']);
-Route::get('/logout_admin',                  [SesiController::class, 'logout_admin']);
+Route::get('/logout',                                     [SesiController::class, 'logout']);
+Route::get('/logout_admin',                               [SesiController::class, 'logout_admin']);
 
 

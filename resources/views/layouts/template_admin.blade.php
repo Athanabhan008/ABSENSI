@@ -1,35 +1,74 @@
+<!--
+=========================================================
+* Soft UI Dashboard 3 - v1.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard
+* Copyright 2024 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="apple-touch-icon" sizes="76x76" href="../../admin/assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../../admin/assets/img/favicon.png">
+  <link rel="icon" type="image/png" href="../../admin/assets/img/logos/Logo MBS Corp.png">
   <title>
-   HRISMBS
+    SIM MBS
   </title>
   <!--     Fonts and icons     -->
+  @stack('css')
   <link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,800" rel="stylesheet" />
   <!-- Nucleo Icons -->
   <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="https://demos.creative-tim.com/soft-ui-dashboard/assets/css/nucleo-svg.css" rel="stylesheet" />
+  {{-- Gunakan Bootstrap 5 agar selaras dengan JS + kompatibel bootstrap-datepicker (hindari campuran BS4/BS5). --}}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
   <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- CSS Files -->
   <link id="pagestyle" href="../../admin/assets/css/soft-ui-dashboard.css?v=1.1.0" rel="stylesheet" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css" />
-
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <!-- Nepcha Analytics (nepcha.com) -->
   <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
-  <script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
   <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+  <style>
+    .nav-item .collapse {
+      transition: all 0.3s ease;
+    }
+
+    .nav-item .collapse .nav-link {
+      padding-left: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .fa-angle-down {
+      transition: transform 0.3s ease;
+    }
+
+    [aria-expanded="true"] .fa-angle-down {
+      transform: rotate(180deg);
+    }
+  </style>
 </head>
 
-<body class="g-sidenav-show">
+<body class="g-sidenav-show  bg-gray-100">
+  <!-- Mobile menu button - positioned on the right -->
+  <div class="position-fixed px-3 py-2 d-xl-none" style="z-index: 1030; right: 0;">
+    <button class="btn btn-white shadow-none" type="button" onclick="toggleSidenav()">
+      <i class="fa fa-bars"></i>
+    </button>
+  </div>
+
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 " id="sidenav-main" style="box-shadow: 0 0  0.75rem rgba(0, 2, 6, 0.7);">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
@@ -42,7 +81,7 @@
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link  {{ ($active === "dashboard") ? 'active' : '' }}" href="/dashboard">
+          <a class="nav-link  {{ ($active === "dashboard") ? 'active' : '' }}" href="/dashboard-admin">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fa-solid fa-gauge" style="color: {{ ($active === "dashboard") ? 'white' : 'black' }};"></i>
             </div>
@@ -74,6 +113,14 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-link  {{ ($active === "report_absen") ? 'active' : '' }}" href="/report_absen">
+            <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                <i class="fa-solid fa-file-lines" style="color: {{ ($active === "report_absen") ? 'white' : 'black' }};"></i>
+            </div>
+            <span class="nav-link-text ms-1">Report Absen</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link  " href="/logout_admin">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fa-solid fa-arrow-right-from-bracket" style="color: black;"></i>
@@ -88,18 +135,16 @@
 
   @yield('content')
 
-@stack('scripts')
-
-  <!--   Core JS Files   -->
+  <!--   Core JS Files (satu rantai: jQuery penuh → Bootstrap 5 → plugin)   -->
+  <script src="../../admin/assets/js/core/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="https://kit.fontawesome.com/90c4b6e831.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="../../admin/assets/js/core/popper.min.js"></script>
-  <script src="../../admin/assets/js/core/bootstrap.min.js"></script>
   <script src="../../admin/assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="../../admin/assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script src="../../admin/assets/js/plugins/chartjs.min.js"></script>
+  <script src="../../admin/assets/js/plugins/datatables/datatables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  @stack('scripts')
+
 
   <script>
     var ctx = document.getElementById("chart-bars").getContext("2d");
@@ -280,7 +325,65 @@
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <script src="https://kit.fontawesome.com/90c4b6e831.js" crossorigin="anonymous"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../../admin/assets/js/soft-ui-dashboard.min.js?v=1.1.0"></script>
+  <script>
+    function toggleSidenav() {
+      const body = document.getElementsByTagName('body')[0];
+      const sidenav = document.getElementById('sidenav-main');
+
+      if (body.classList.contains('g-sidenav-pinned')) {
+        body.classList.remove('g-sidenav-pinned');
+        setTimeout(function() {
+          sidenav.classList.remove('bg-white');
+        }, 100);
+      } else {
+        body.classList.add('g-sidenav-pinned');
+        sidenav.classList.add('bg-white');
+      }
+    }
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const reportLink = document.querySelector('[data-bs-target="#reportSubmenu"]');
+      const reportSubmenu = document.getElementById('reportSubmenu');
+      if (!reportLink || !reportSubmenu) return;
+
+      const collapse = bootstrap.Collapse.getOrCreateInstance(reportSubmenu, { toggle: false });
+
+      reportLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        const isExpanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', !isExpanded);
+        if (isExpanded) {
+          collapse.hide();
+        } else {
+          collapse.show();
+        }
+      });
+    });
+  </script>
+  <script>
+    function confirmLogout() {
+      Swal.fire({
+        title: 'Apakah Anda yakin ingin keluar?',
+        text: "Anda akan diarahkan ke halaman Login.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, keluar!',
+        cancelButtonText: 'Batal'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "{{ url('logout') }}";
+        }
+      });
+    }
+  </script>
 </body>
 
 </html>

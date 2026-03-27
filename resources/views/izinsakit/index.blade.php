@@ -12,8 +12,7 @@
         <div class="col-12">
           <div class="card mb-4">
               <div class="card-header pb-0">
-                  <h6>Tabel Karyawan</h6>
-                  <a href="{{ url('karyawan/create') }}" class="btn btn-success">Tambah Data</a>
+                  <h6>Tabel Sakit</h6>
             </div>
             <div class="card-body px-0 pt-0 pb-2">
               <div class="table-responsive p-0">
@@ -21,9 +20,11 @@
                   <thead>
                     <tr>
                       <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama/Email</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Role/No.Hp</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Jumlah Cuti</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tgl Masuk</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Tanggal Pengajuan Sakit</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tanggal Pengajuan Akhir</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Total Hari</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Keterangan</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Foto Surat</th>
                       <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">ACTION</th>
                     </tr>
                   </thead>
@@ -43,14 +44,24 @@
                         </div>
                       </td>
                       <td>
-                        <p class="text-xs font-weight-bold mb-0">{{ $item->role }}</p>
-                        <p class="text-xs text-secondary mb-0">{{ $item->no_hp }}</p>
+                        <p class="text-xs font-weight-bold mb-0">{{ $item->tgl_pengajuan }}</p>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="badge badge-sm bg-gradient-success">{{ $item->jatah_cuti }}</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{ $item->tgl_pengajuan_akhir }}</span>
                       </td>
                       <td class="align-middle text-center">
-                        <span class="text-secondary text-xs font-weight-bold">{{ $item->tgl_masuk }}</span>
+                        <span class="text-secondary text-xs font-weight-bold">{{ $item->total_hari }}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <span class="text-secondary text-xs font-weight-bold">{{ $item->keterangan }}</span>
+                      </td>
+                      <td class="align-middle text-center">
+                        <?php
+                        $pathSurat = Storage::url('uploads/surat_sakit/' . $item->foto_surat);
+                        ?>
+                     <a href="javascript:void(0)" class="preview-link" onclick="openPreview('{{ asset('storage/uploads/surat_sakit/'.$item->foto_surat) }}')">
+                        <img src="{{ url($pathSurat) }}" class="preview-thumb" width="100px">
+                        </a>
                       </td>
                       <td class="align-middle" style="text-align: center;">
                         <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user" style="text-decoration: none;">

@@ -57,6 +57,7 @@
         border-radius: 14px;
         overflow: hidden;
         border: 1px solid rgba(0,0,0,.06);
+        position: relative;
     }
 
     .absen-textarea{
@@ -125,7 +126,12 @@
                     <div class="px-2 pt-2 pb-1">
                         <small class="text-muted">Aktifkan GPS untuk validasi radius</small>
                     </div>
-                    <div id="map"></div>
+                    <div id="map">
+                        <button id="refreshLocation" class="btn btn-primary btn-sm"
+                        style="position: absolute; top: 10px; right: 10px; z-index: 999; border-radius: 10px; padding: 6px 10px;">
+                        🔄 Refresh Lokasi
+                    </button>
+                    </div>
                 </div>
             </div>
 
@@ -142,7 +148,11 @@
 
 @push('script')
     <script>
+
         var image = null;
+        var map = null;
+        var marker = null;
+        var circle = null;
 
         Webcam.set({
             width: 640,
@@ -162,30 +172,79 @@
     });
 
         var lokasi = document.getElementById('lokasi');
-        if(navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
-        }
 
-        function successCallback(position){
-            lokasi.value = position.coords.latitude + "," + position.coords.longitude;
-            var map = L.map('map').setView([position.coords.latitude, position.coords.longitude], 18);
+        function initMapIfNeeded(lat, lng){
+            if (map) return;
+            map = L.map('map').setView([lat, lng], 18);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
-        var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
-        var circle = L.circle([-6.919080053798793, 107.7153742206726], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 20
-        }).addTo(map);
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
 
+            marker = L.marker([lat, lng]).addTo(map);
+            circle = L.circle([-6.919080053798793, 107.7153742206726], {
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 20
+            }).addTo(map);
         }
 
-        function errorCallback(){
+        function updateMapPosition(lat, lng){
+            lokasi.value = lat + "," + lng;
+            initMapIfNeeded(lat, lng);
 
+            if (marker) marker.setLatLng([lat, lng]);
+            map.setView([lat, lng], 18, { animate: true });
         }
+
+        function detectLocation(){
+            if(!navigator.geolocation){
+                Swal.fire({
+                    title:'Error!',
+                    text:'Browser tidak mendukung GPS (geolocation).',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            $("#refreshLocation").prop("disabled", true).text("Memperbarui...");
+
+            navigator.geolocation.getCurrentPosition(function(position){
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                updateMapPosition(lat, lng);
+            }, function(err){
+                var msg = 'Gagal mendapatkan lokasi. Pastikan izin lokasi aktif.';
+                if (err && err.code === 1) msg = 'Izin lokasi ditolak. Silakan aktifkan izin lokasi.';
+                if (err && err.code === 2) msg = 'Lokasi tidak tersedia. Coba lagi di tempat terbuka.';
+                if (err && err.code === 3) msg = 'Timeout mendapatkan lokasi. Coba lagi.';
+                Swal.fire({
+                    title:'Error!',
+                    text: msg,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }, {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            });
+
+            setTimeout(function(){
+                $("#refreshLocation").prop("disabled", false).text("🔄 Refresh Lokasi");
+            }, 1200);
+        }
+
+        // initial detect
+        detectLocation();
+
+        // manual refresh (button inside map)
+        $("#refreshLocation").on("click", function(e){
+            e.preventDefault();
+            detectLocation();
+        });
 
         $("#takeabsen").click(function(e) {
             Webcam.snap(function(uri) {

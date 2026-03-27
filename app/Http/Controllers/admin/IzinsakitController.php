@@ -14,12 +14,13 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Models\Sakit;
 use App\Models\Vwizinsakit;
+use App\Models\Vwsakit;
 
 class IzinsakitController extends Controller
 {
     public function index()
     {
-        $izinsakit = Vwizinsakit::all();
+        $izinsakit = Vwsakit::all();
         return view('izinsakit.index', [
             'izinsakit' => $izinsakit,
             "active" => 'sakit'
