@@ -137,7 +137,20 @@ class ReportabsenController extends Controller
     {
 
 
-
+        function selisih($jam_masuk, $jam_keluar)
+{
+    list($h, $m, $s) = explode(":", $jam_masuk);
+    $dtAwal = mktime($h, $m, $s, "1", "1", "1");
+    list($h, $m, $s) = explode(":", $jam_keluar);
+    $dtAkhir = mktime($h, $m, $s, "1", "1", "1");
+    $dtSelisih = $dtAkhir - $dtAwal;
+    $totalmenit = $dtSelisih / 60;
+    $jam = explode(".", $totalmenit / 60);
+    $sisamenit = ($totalmenit / 60) - $jam[0];
+    $sisamenit2 = $sisamenit * 60;
+    $jml_jam = $jam[0];
+    return $jml_jam . ":" . round($sisamenit2);
+}
 
         $periode_start  = $request->get('periode_start');
         $periode_end    = $request->get('periode_end');
@@ -196,15 +209,14 @@ class ReportabsenController extends Controller
         $this->fpdf->Cell(3.5, 0.7, '', 0, 0, 'L');
 		$this->fpdf->Ln(1.5);
 
-        $table = new easyTables($this->fpdf, "{2.5, 8, 10, 20, 8, 11, 11}", 'border:1;font-size:7.9;min-height:0.5;');
+        $table = new easyTables($this->fpdf, "{2.5, 8, 5,5, 6, 7}", 'border:1;font-size:7.9;min-height:0.5;');
 
         $table->rowStyle('font-style:B;');
         $table->easyCell('NO', 'valign:M;align:C;rowspan:2;');
         $table->easyCell('Tanggal Absen', 'valign:M;align:C;rowspan:2;');
-        $table->easyCell('No.HP', 'valign:M;align:C;rowspan:2;');
         $table->easyCell('Jadwal Absensi', 'valign:M;align:C;colspan:2;');
+        $table->easyCell('Terlambat', 'valign:M;align:C;rowspan:2;');
         $table->easyCell('Keterangan', 'valign:M;align:C;rowspan:2;');
-        $table->easyCell('Status', 'valign:M;align:C;rowspan:2;');
         $table->printRow();
 
         $table->rowStyle('font-style:B;');
@@ -245,28 +257,36 @@ class ReportabsenController extends Controller
             $nama = $rows[0]['name'] ?? '-';
 
 
-            $table->rowStyle('font-style:B;bgcolor:#F8F9FA;');
+            $table->rowStyle('font-style:B;bgcolor:#F8F9FA;font-size:10;');
             $table->easyCell('Nama: ' . $nama, 'colspan:7;align:L;');
             $table->printRow();
 
             foreach ($rows as $idx => $row) {
 
                 $tgl_absen = $row['tgl_absen'] ?? ($row['tgl'] ?? '-');
-                $no_hp = $row['no_hp'] ?? '-';
                 $jam_masuk = $row['jam_masuk'] ?? '-';
                 $jam_keluar = $row['jam_keluar'] ?? '-';
+                $jam_masuk = $row['jam_masuk'] ?? '-';
+
+                $status = '-';
+
+                if($jam_masuk != '-' && $jam_masuk > '08:05:00'){
+                    $jamterlambat = selisih('08:05:00', $jam_masuk);
+                    $status = "Terlambat ".$jamterlambat;
+                } elseif($jam_masuk != '-') {
+                    $status = "Tepat Waktu";
+                }
+
                 $keterangan = $row['keterangan'] ?? '-';
-                $status = $row['status'] ?? '-';
 
                 $table->rowStyle('');
 
                 $table->easyCell($no, 'valign:M;align:C;');
                 $table->easyCell($tgl_absen, 'valign:M;align:C;');
-                $table->easyCell($no_hp, 'valign:M;align:L;');
                 $table->easyCell($jam_masuk, 'valign:M;align:C;');
                 $table->easyCell($jam_keluar, 'valign:M;align:C;');
-                $table->easyCell($keterangan, 'valign:M;align:L;');
                 $table->easyCell($status, 'valign:M;align:C;');
+                $table->easyCell($keterangan, 'valign:M;align:C;');
 
                 $table->printRow();
 
