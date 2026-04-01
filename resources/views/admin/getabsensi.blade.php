@@ -67,7 +67,7 @@ use Illuminate\Support\Facades\Storage;
         @if($item->status_approve == 1)
             <span class="badge bg-success">Approved</span>
         @elseif($item->status_approve == 0)
-            <span class="badge bg-danger text-light">Need Approve</span>
+            <span class="badge bg-danger">Need Approve</span>
         @endif
     </td>
     <td style="text-align:center">

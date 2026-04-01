@@ -9,6 +9,7 @@ use App\Http\Controllers\SesiController;
 use App\Http\Controllers\manager\ManagerController;
 use App\Http\Controllers\CutiSakitController;
 use App\Http\Controllers\admin\IzinsakitController;
+use App\Http\Controllers\admin\DataAbsensiController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Izinsakit;
 use Illuminate\Support\Facades\Route;
@@ -78,6 +79,14 @@ Route::get('/dashboard-admin',                            [DashboardController::
 Route::get('/izinsakit',                                  [IzinsakitController::class, 'index']);
 Route::get('/cuti',                                       [CutiController::class, 'index']);
 Route::get('/report_absen',                               [ReportabsenController::class, 'index']);
+
+//DATA ABSENSI KARYAWAN
+Route::get('/data-absensi',                               [DataAbsensiController::class, 'index']);
+Route::get('/data-absensidatatable',                      [DataAbsensiController::class, 'datatable'])->name('data-absensidatatable');
+Route::post('/data-absensidatatable',                     [DataAbsensiController::class, 'datatable'])->name('data-absensidatatable');
+Route::get('/data-absensiedit/{id}',                      [DataAbsensiController::class, 'edit'])->name('data-absensiedit');
+Route::post('/data-absensiupdate/{id}',                   [DataAbsensiController::class, 'update'])->name('data-absensiupdate');
+
 
 //KARYAWAN
 Route::get('/karyawan/datatable',                         [KaryawanController::class, 'datatable'])->name('karyawan/datatable');

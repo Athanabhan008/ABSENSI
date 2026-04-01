@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AbsensiController extends Controller
 {
@@ -31,74 +32,143 @@ class AbsensiController extends Controller
         ]);
     }
     public function store(Request $request)
-    {
-        $user = auth()->user();
-        $id_user = auth()->user()->id;
-        $keterangan = trim($request->keterangan ?? '');
-        $tgl_absen = date("Y-m-d");
-        $jam_masuk = date("H:i:s");
-        $latitudekantor = -6.919080053798793;
-        $longitudekantor = 107.7153742206726;
-        $lokasi = $request->lokasi;
-        $lokasiuser = explode(",", $lokasi);
-        $latitudeuser = $lokasiuser[0];
-        $longitudeuser = $lokasiuser[1];
+{
+    $user = auth()->user();
+    $id_user = $user->id;
+    $keterangan = trim($request->keterangan ?? '');
+    $tgl_absen = date("Y-m-d");
+    $jam_masuk = date("H:i:s");
 
-        $jarak  = $this->distance($latitudekantor, $longitudekantor, $latitudeuser, $longitudeuser);
-        $radius = round($jarak["meters"]);
+    $latitudekantor = -6.919080053798793;
+    $longitudekantor = 107.7153742206726;
 
-        $cek = DB::table('absens')
-            ->where('tgl_absen', $tgl_absen)
-            ->where('id_user', $id_user)
-            ->count();
+    $lokasi = $request->lokasi;
 
-        if ($cek > 0) {
-            $ket = "out";
-        } else {
-            $ket = "in";
-        }
+    if (!$lokasi) {
+        echo "error|Lokasi tidak ditemukan";
+        return;
+    }
 
-        // aturan jam dan status
-        $batasMasuk  = "08:10:00";
-        $batasPulang = "16:30:00";
-        $isTelatMasuk = ($cek == 0 && $jam_masuk > $batasMasuk);
-        $isPulangCepat = ($cek > 0 && $jam_masuk < $batasPulang);
-        $diLuarRadius = ($radius > 20);
+    $lokasiuser = explode(",", $lokasi);
+    if (count($lokasiuser) < 2) {
+        echo "error|Format lokasi tidak valid";
+        return;
+    }
 
-        // kombinasi aturan: jika salah satu kondisi ini terjadi, keterangan wajib diisi
-        if (($isTelatMasuk || $isPulangCepat || $diLuarRadius) && $keterangan === '') {
-            echo "error|Anda Wajib mengisi kolom keterangan Karna anda telat/berada diluar radius";
-            return;
-        }
+    $latitudeuser = $lokasiuser[0];
+    $longitudeuser = $lokasiuser[1];
 
-        $image = $request->image;
-        $folderPath = "public/uploads/absensi/";
-        $formatName = $id_user."-".$tgl_absen . "-" . $ket;
-        $image_parts = explode(";base64", $image);
-        $image_base64 = base64_decode($image_parts[1]);
-        $fileName = $formatName . ".png";
-        $file = $folderPath . $fileName;
-        $status = $isTelatMasuk ? 'telat' : 'hadir';
+    $jarak  = $this->distance($latitudekantor, $longitudekantor, $latitudeuser, $longitudeuser);
+    $radius = round($jarak["meters"]);
 
-        // hitung jumlah telat sebelumnya
-        $totalTelat = DB::table('absens')
-            ->where('id_user', $id_user)
-            ->where('status', 'telat')
-            ->count();
+    $existing = DB::table('absens')
+        ->where('tgl_absen', $tgl_absen)
+        ->where('id_user', $id_user)
+        ->first();
 
-        // tentukan status approve
-        if ($status == 'hadir') {
-            $statusApprove = 1;
-        } else {
-            // jika telat dan sudah 4 kali atau lebih
-            if (($totalTelat + 1) >= 4) {
-                $statusApprove = 0;
+    if ($existing && $existing->jam_masuk && !$existing->jam_keluar) {
+        $ket = "out";
+    } else {
+        $ket = "in";
+    }
+
+    // aturan jam
+    $batasMasuk  = "08:10:00";
+    $batasPulang = "16:30:00";
+
+    $isTelatMasuk = ($ket == "in" && $jam_masuk > $batasMasuk);
+    $isPulangCepat = ($ket == "out" && $jam_masuk < $batasPulang);
+    $diLuarRadius = ($radius > 20);
+
+    // wajib isi keterangan
+    if (($isTelatMasuk || $isPulangCepat || $diLuarRadius) && $keterangan === '') {
+        echo "error|Anda wajib mengisi keterangan karena telat / di luar radius";
+        return;
+    }
+
+    $image = $request->image;
+    if (!$image) {
+        echo "error|Gambar tidak ditemukan";
+        return;
+    }
+
+    $folderPath = "public/uploads/absensi/";
+    $formatName = $id_user . "-" . $tgl_absen . "-" . $ket;
+
+    $image_parts = explode(";base64", $image);
+    if (count($image_parts) < 2) {
+        echo "error|Format gambar tidak valid";
+        return;
+    }
+
+    $image_base64 = base64_decode($image_parts[1]);
+    $fileName = $formatName . ".png";
+    $file = $folderPath . $fileName;
+
+    $status = $isTelatMasuk ? 'telat' : 'hadir';
+
+    $bulanSekarang = Carbon::now()->month;
+    $tahunSekarang = Carbon::now()->year;
+
+    $totalTelat = DB::table('absens')
+        ->where('id_user', $id_user)
+        ->where('jam_masuk', '>', '08:05:00')
+        ->whereMonth('tgl_absen', $bulanSekarang)
+        ->whereYear('tgl_absen', $tahunSekarang)
+        ->count();
+
+    // status approve
+    if ($status == 'hadir') {
+        $statusApprove = 1;
+    } else {
+        $statusApprove = (($totalTelat + 1) >= 3) ? 0 : 1;
+    }
+
+    if ($existing) {
+
+        // ABSEN PULANG
+        if ($existing->jam_masuk && !$existing->jam_keluar) {
+
+            $update = DB::table('absens')
+                ->where('id', $existing->id)
+                ->update([
+                    'jam_keluar'    => $jam_masuk,
+                    'lokasi_keluar' => $lokasi,
+                    'foto_keluar'   => $fileName,
+                    'keterangan'    => $keterangan,
+                ]);
+
+            if ($update) {
+                echo "success|Terima kasih anda sudah melakukan absen pulang|out";
+                Storage::put($file, $image_base64);
             } else {
-                $statusApprove = 1;
+                echo "error|Gagal absen pulang|out";
+            }
+
+        } else {
+
+            $update = DB::table('absens')
+                ->where('id', $existing->id)
+                ->update([
+                    'jam_masuk'      => $jam_masuk,
+                    'lokasi_masuk'   => $lokasi,
+                    'foto_masuk'     => $fileName,
+                    'status'         => $status,
+                    'status_approve' => $statusApprove,
+                    'keterangan'     => $keterangan,
+                ]);
+
+            if ($update) {
+                echo "success|Terima kasih anda sudah melakukan absen masuk|in";
+                Storage::put($file, $image_base64);
+            } else {
+                echo "error|Gagal update absen|in";
             }
         }
 
-        $data = [
+    } else {
+
+        $simpan = DB::table('absens')->insert([
             'id_user'         => $id_user,
             'tgl_absen'       => $tgl_absen,
             'jam_masuk'       => $jam_masuk,
@@ -107,36 +177,16 @@ class AbsensiController extends Controller
             'status'          => $status,
             'status_approve'  => $statusApprove,
             'keterangan'      => $keterangan,
-        ];
+        ]);
 
-        if ($cek > 0) {
-        $data_pulang = [
-            'jam_keluar'    => $jam_masuk,
-            'lokasi_keluar' => $lokasi,
-            'foto_keluar'   => $fileName,
-            'keterangan'    => $keterangan,
-        ];
-        $update = DB::table('absens')->where('tgl_absen', $tgl_absen)->where('id_user', $id_user)->update($data_pulang);
-        if ($update) {
-            echo "success|Terima kasih anda sudah melakukan absen pulang|out";
+        if ($simpan){
+            echo "success|Terima kasih anda sudah melakukan absen masuk|in";
             Storage::put($file, $image_base64);
         } else {
-            echo "error|Maaf gagal absen|out";
-
+            echo "error|Gagal absen|in";
         }
-
-        }   else {
-
-            $simpan = DB::table('absens')->insert($data);
-            if ($simpan){
-                echo "success|Terima kasih anda sudah melakukan absen masuk|in";
-                Storage::put($file, $image_base64);
-            } else {
-                echo "error|Maaf gagal absen|in";
-            }
-        }
-
     }
+}
 
     public function distance($lat1, $lon1, $lat2, $lon2)
     {

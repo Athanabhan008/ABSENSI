@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use App\Models\Absen;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 class SetAbsenAlfa extends Command
 {
     /**
@@ -13,7 +14,7 @@ class SetAbsenAlfa extends Command
      *
      * @var string
      */
-    protected $signature = 'set:absen-alfa';
+    protected $signature = 'absen:set-alfa';
 
     /**
      * The console command description.
@@ -29,29 +30,36 @@ class SetAbsenAlfa extends Command
      */
     public function handle()
     {
-        $today = Carbon::today();
 
-    foreach (User::all() as $user) {
+    $today = Carbon::today();
 
-        $cek = Absen::where('user_id', $user->id)
-            ->whereDate('tanggal', $today)
+    $users = User::whereIn('role', ['staff', 'admin'])->get();
+
+    foreach ($users as $user) {
+
+        $cek = DB::table('absens')
+            ->where('id_user', $user->id)
+            ->whereDate('tgl_absen', $today)
             ->first();
 
         if ($cek) continue;
 
-        if ($today->isWeekend()) {
-            $status = 'libur';
-        } else {
-            $status = 'alfa';
-        }
+        $status = $today->isWeekend() ? 'libur' : 'alfa';
 
-        Absen::create([
-            'user_id' => $user->id,
-            'tanggal' => $today,
-            'jam_masuk' => null,
-            'jam_pulang' => null,
-            'status' => $status
+        DB::table('absens')->insert([
+            'id_user'      => $user->id,
+            'tgl_absen'    => $today,
+            'jam_masuk'    => null,
+            'jam_keluar'   => null,
+            'lokasi_masuk' => null,
+            'lokasi_keluar'=> null,
+            'foto_masuk'   => null,
+            'foto_keluar'  => null,
+            'status'       => $status,
+            'keterangan'   => null,
         ]);
     }
+
+    $this->info('Absen alfa/libur berhasil dibuat untuk staff & admin');
     }
 }
