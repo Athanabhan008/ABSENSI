@@ -82,10 +82,10 @@ Route::get('/report_absen',                               [ReportabsenController
 
 //DATA ABSENSI KARYAWAN
 Route::get('/data-absensi',                               [DataAbsensiController::class, 'index']);
-Route::get('/data-absensidatatable',                      [DataAbsensiController::class, 'datatable'])->name('data-absensidatatable');
-Route::post('/data-absensidatatable',                     [DataAbsensiController::class, 'datatable'])->name('data-absensidatatable');
-Route::get('/data-absensiedit/{id}',                      [DataAbsensiController::class, 'edit'])->name('data-absensiedit');
-Route::post('/data-absensiupdate/{id}',                   [DataAbsensiController::class, 'update'])->name('data-absensiupdate');
+Route::get('/data-absensi/datatable',                      [DataAbsensiController::class, 'datatable'])->name('data-absensi/datatable');
+Route::post('/data-absensi/datatable',                     [DataAbsensiController::class, 'datatable'])->name('data-absensi/datatable');
+Route::get('/data-absensi/edit/{id}',                      [DataAbsensiController::class, 'edit'])->name('data-absensi/edit');
+Route::post('/data-absensi/update/{id}',                   [DataAbsensiController::class, 'update'])->name('data-absensi/update');
 
 
 //KARYAWAN

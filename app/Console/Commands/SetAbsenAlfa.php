@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use App\Models\Absen;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 class SetAbsenAlfa extends Command
 {
     /**
@@ -30,36 +31,43 @@ class SetAbsenAlfa extends Command
      */
     public function handle()
     {
+        $today = Carbon::today();
 
-    $today = Carbon::today();
+        $users = User::whereIn('role', ['staff', 'admin'])->get();
 
-    $users = User::whereIn('role', ['staff', 'admin'])->get();
+        $userColumn = Schema::hasColumn('absens', 'id_user') ? 'id_user' : 'user_id';
+        $dateColumn = Schema::hasColumn('absens', 'tgl_absen') ? 'tgl_absen' : 'tanggal';
 
-    foreach ($users as $user) {
+        foreach ($users as $user) {
+            $cek = DB::table('absens')
+                ->where($userColumn, $user->id)
+                ->whereDate($dateColumn, $today)
+                ->first();
 
-        $cek = DB::table('absens')
-            ->where('id_user', $user->id)
-            ->whereDate('tgl_absen', $today)
-            ->first();
+            if ($cek) {
+                continue;
+            }
 
-        if ($cek) continue;
+            $status = $today->isWeekend() ? 'libur' : 'alfa';
 
-        $status = $today->isWeekend() ? 'libur' : 'alfa';
+            $payload = [
+                $userColumn     => $user->id,
+                $dateColumn     => $today,
+                'jam_masuk'     => null,
+                'jam_keluar'    => null,
+                'lokasi_masuk'  => null,
+                'lokasi_keluar' => null,
+                'foto_masuk'    => null,
+                'foto_keluar'   => null,
+                'status'        => $status,
+                'keterangan'    => null,
+            ];
 
-        DB::table('absens')->insert([
-            'id_user'      => $user->id,
-            'tgl_absen'    => $today,
-            'jam_masuk'    => null,
-            'jam_keluar'   => null,
-            'lokasi_masuk' => null,
-            'lokasi_keluar'=> null,
-            'foto_masuk'   => null,
-            'foto_keluar'  => null,
-            'status'       => $status,
-            'keterangan'   => null,
-        ]);
-    }
+            DB::table('absens')->insert($payload);
+        }
 
-    $this->info('Absen alfa/libur berhasil dibuat untuk staff & admin');
+        $this->info('Absen alfa/libur berhasil dibuat untuk staff & admin');
+
+        return self::SUCCESS;
     }
 }

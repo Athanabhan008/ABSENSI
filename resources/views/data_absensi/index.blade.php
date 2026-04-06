@@ -37,7 +37,7 @@
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
-                <h6>Data Absensi Karyawan</h6>
+                <h6>Data Absensi data-absensi</h6>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="ml-auto">
 
@@ -47,7 +47,7 @@
 
                         @if(Auth::user() && Auth::user()->role === 'superadmin' || Auth::user() && Auth::user()->role == 'admin' || Auth::user() && Auth::user()->role == 'manager')
                             <button type="button" class="btn btn-primary" id="btn-filter" data-toggle="modal" data-target="#formFilter">
-                                <i class="fa-solid fa-book fa-lg" style="margin-right: 10px"></i>Filter Karyawan
+                                <i class="fa-solid fa-book fa-lg" style="margin-right: 10px"></i>Filter data-absensi
                               </button>
                         @endif
 
@@ -72,7 +72,7 @@
                     <thead style="background-color: #1E3135; color: white;">
                       <tr>
                         <th style="color: white;" class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>
-                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Nama Karyawan</th>
+                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Nama data-absensi</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Tanggal Absensi</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Jam Masuk</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Foto Masuk</th>
@@ -113,13 +113,13 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Tambah Data Karyawan</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Tambah Data data-absensi</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-            <form id="form_karyawan">
+            <form id="form_data-absensi">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="_type" value="create">
@@ -282,7 +282,7 @@
 
 console.log("kipak");
 
-window.defaultUrl = '{{ url('/karyawan/') }}/';
+window.defaultUrl = '{{ url('/data-absensi/') }}/';
 
 let modal = $("#formModal");
 let table;
@@ -300,7 +300,7 @@ $(document).ready(function() {
     // Auto generate nomor PR saat modal dibuka
     $('button[data-target="#formModal"]').on('click', function() {
         // Reset form
-        $('#form_karyawan')[0].reset();
+        $('#form_data-absensi')[0].reset();
 
         // Set form type to create
         $('input[name=_type]').val('create');
@@ -378,7 +378,7 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 // Reset form terlebih dahulu
-                $('#form_karyawan')[0].reset();
+                $('#form_data-absensi')[0].reset();
 
                 // Reload table
                 table.ajax.reload();
@@ -463,7 +463,7 @@ $(document).ready(function() {
                             alert(response.message);
                             table.ajax.reload();
                         }
-                        $('#form_karyawan')[0].reset();
+                        $('#form_data-absensi')[0].reset();
                     },
                     error: function(jqXHR) {
                         let message = 'Terjadi kesalahan saat menghapus data';
@@ -495,7 +495,7 @@ $(document).ready(function() {
 function viewDatatable() {
     table = $('.basic-datatables').DataTable({
         ajax: {
-            url: "{{ route('karyawan/datatable') }}",
+            url: "{{ route('data-absensi/datatable') }}",
             "type": "post",
             "data": function (d) {
                 var formData = $("#form_filter").serializeArray().concat($("#form_filterPR").serializeArray());
@@ -540,7 +540,7 @@ function viewDatatable() {
                 }
             },
             {
-                data: "email",
+                data: "tgl_absen",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -550,7 +550,7 @@ function viewDatatable() {
                 }
             },
             {
-                data: "no_hp",
+                data: "jam_masuk",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -560,7 +560,7 @@ function viewDatatable() {
                 }
             },
             {
-                data: "role",
+                data: "foto_masuk",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -570,7 +570,7 @@ function viewDatatable() {
                 }
             },
             {
-                data: "tgl_masuk",
+                data: "lokasi_masuk",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -580,7 +580,37 @@ function viewDatatable() {
                 }
             },
             {
-                data: "jatah_cuti",
+                data: "jam_pulang",
+                render: function (data, type, row, meta) {
+                    if (data == '' || data == null) {
+                        return '-';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            {
+                data: "foto_pulang",
+                render: function (data, type, row, meta) {
+                    if (data == '' || data == null) {
+                        return '-';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            {
+                data: "lokasi_pulang",
+                render: function (data, type, row, meta) {
+                    if (data == '' || data == null) {
+                        return '-';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            {
+                data: "status_approve",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -674,7 +704,7 @@ function collectionS2Search() {
         width: '100%',
         placeholder: 'Pilih Sales',
         ajax: {
-            url: "{{ url('/karyawan/getSales') }}",
+            url: "{{ url('/data-absensi/getSales') }}",
             dataType: 'json',
             data: function (params) {
                 return {
@@ -709,7 +739,7 @@ function collectionS2SearchPR() {
         width: '72.5%',
         placeholder: '',
         ajax: {
-            url: "{{ url('/karyawan/getSales') }}",
+            url: "{{ url('/data-absensi/getSales') }}",
             dataType: 'json',
             data: function (params) {
                 return {
