@@ -58,6 +58,13 @@ class DashboardController extends Controller
         return view('admin.getmap',compact('absensi'));
     }
 
+    public function showmap_keluar(Request $request)
+    {
+        $id = $request->id;
+        $absensi = DB::table('absens')->where('id', $id)->first();
+        return view('admin.getmap_keluar',compact('absensi'));
+    }
+
     public function approve(Request $request, $id)
     {
         $absen                                  = Absen::find($id);

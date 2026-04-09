@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" integrity="sha512-xrbX64SIXOxo5cMQEDUQ3UyKsCreOEq1Im90z3B7KPoxLJ2ol/tCT0aBhuIzASfmBVdODioUdUPbt5EDEXmD9g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
 
 <style>
@@ -46,8 +47,17 @@
                               </button>
 
                           <button type="button" class="btn btn-warning" id="btn-edit" data-toggle="modal" data-target="#formModal">
-                            <i class="fa-solid fa-pencil" style="margin-right: 10px;"></i> Ubah Data
+                            <i class="fa-solid fa-pencil" style="margin-right: 10px;"></i> Approval
                           </button>
+
+                          <button type="button" class="btn btn-success" id="btn-map">
+                            <i class="fa-solid fa-map" style="margin-right: 10px;"></i> Lihat Lokasi Masuk
+                          </button>
+
+                          <button type="button" class="btn btn-danger" id="btn-map_keluar">
+                            <i class="fa-solid fa-map" style="margin-right: 10px;"></i> Lihat Lokasi Pulang
+                          </button>
+
                     </div>
                 </div>
               </div>
@@ -61,10 +71,8 @@
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Tanggal Absensi</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Jam Masuk</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Foto Masuk</th>
-                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Lokasi Masuk</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Jam Pulang</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Foto Pulang</th>
-                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Lokasi Pulang</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Status Absensi</th>
                       </tr>
                     </thead>
@@ -99,9 +107,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Approval</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <form id="form_data_absensi">
@@ -128,10 +134,41 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                     <button type="submit" class="btn btn-success">Simpan</button>
                 </div>
             </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modal-map" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Lokasi Absen Masuk</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="loadmap"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="modal-map_keluar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Lokasi Absen Pulang</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="loadmap_keluar"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
         </div>
       </div>
     </div>
@@ -143,9 +180,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Filter Absensi</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <form id="form_filter">
@@ -160,8 +195,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-success submit-filter" data-dismiss="modal">Simpan</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-success submit-filter" data-bs-dismiss="modal">Simpan</button>
                 </div>
             </form>
         </div>
@@ -172,7 +207,6 @@
   @push('scripts')
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -180,6 +214,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
   <script src="../../admin/assets/js/plugins/bootstrap-datepicker.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
 
 console.log("kipak");
@@ -188,6 +223,7 @@ window.defaultUrl = '{{ url('/data-absensi/') }}/';
 
 let modal = $("#formModal");
 let table;
+let dataAbsensiMap = null;
 
 $('.yearmonthpicker').datepicker({
     format: "yyyy-mm",
@@ -198,6 +234,161 @@ $('.yearmonthpicker').datepicker({
 
 $(document).ready(function() {
     viewDatatable();
+
+    function initAbsensiMapInModal() {
+        var el = document.getElementById('mapAbsensi');
+        if (!el || typeof L === 'undefined') return;
+
+        var lat = parseFloat(el.dataset.lat);
+        var lng = parseFloat(el.dataset.lng);
+        if (isNaN(lat) || isNaN(lng)) return;
+
+        if (dataAbsensiMap) {
+            try { dataAbsensiMap.remove(); } catch (e) {}
+            dataAbsensiMap = null;
+        }
+
+        dataAbsensiMap = L.map(el).setView([lat, lng], 18);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(dataAbsensiMap);
+        L.marker([lat, lng]).addTo(dataAbsensiMap);
+
+        setTimeout(function () {
+            if (dataAbsensiMap) dataAbsensiMap.invalidateSize();
+        }, 200);
+    }
+
+    function loadMapByAbsenId(absenId) {
+        $("#loadmap").html('<div class="text-muted">Memuat peta...</div>');
+        $.ajax({
+            type: 'POST',
+            url: "{{ url('/showmap') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: absenId
+            },
+            cache: false,
+            success: function (respond) {
+                if (dataAbsensiMap) {
+                    try { dataAbsensiMap.remove(); } catch (err) {}
+                    dataAbsensiMap = null;
+                }
+                $('#loadmap').html(respond);
+                $('#modal-map')
+                    .off('shown.bs.modal.absensiMap')
+                    .on('shown.bs.modal.absensiMap', function () {
+                        initAbsensiMapInModal();
+                    })
+                    .modal('show');
+            },
+            error: function () {
+                $("#loadmap").html('<div class="text-danger">Gagal memuat peta.</div>');
+                $('#modal-map').modal('show');
+            }
+        });
+    }
+
+    $('#modal-map').off('hidden.bs.modal.absensiMap').on('hidden.bs.modal.absensiMap', function () {
+        if (dataAbsensiMap) {
+            try { dataAbsensiMap.remove(); } catch (e) {}
+            dataAbsensiMap = null;
+        }
+        $('#loadmap').empty();
+    });
+
+    // Tombol "Lihat Lokasi" (berdasarkan row yang dipilih)
+    $("#btn-map").on("click", function (e) {
+        e.preventDefault();
+        let selected = table ? table.row('.selected').data() : null;
+        if (_.isEmpty(selected) || selected == undefined) {
+            Swal.fire({
+                title: 'Peringatan',
+                text: 'Pilih Data Terlebih Dahulu',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+        loadMapByAbsenId(selected.id);
+    });
+
+    // Tombol map kecil di kolom lokasi masuk (langsung berdasarkan id baris)
+    $(document).on('click', '.showmap', function (e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        if (!id) return;
+        loadMapByAbsenId(id);
+    });
+
+
+    function loadMapDataKeluar(absenId) {
+        $("#loadmap_keluar").html('<div class="text-muted">Memuat peta...</div>');
+        $.ajax({
+            type: 'POST',
+            url: "{{ url('/showmap_keluar') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: absenId
+            },
+            cache: false,
+            success: function (respond) {
+                if (dataAbsensiMap) {
+                    try { dataAbsensiMap.remove(); } catch (err) {}
+                    dataAbsensiMap = null;
+                }
+                $('#loadmap_keluar').html(respond);
+                $('#modal-map_keluar')
+                    .off('shown.bs.modal.absensiMap')
+                    .on('shown.bs.modal.absensiMap', function () {
+                        initAbsensiMapInModal();
+                    })
+                    .modal('show');
+            },
+            error: function () {
+                $("#loadmap_keluar").html('<div class="text-danger">Gagal memuat peta.</div>');
+                $('#modal-map_keluar').modal('show');
+            }
+        });
+    }
+
+    $('#modal-map_keluar').off('hidden.bs.modal.absensiMap').on('hidden.bs.modal.absensiMap', function () {
+        if (dataAbsensiMap) {
+            try { dataAbsensiMap.remove(); } catch (e) {}
+            dataAbsensiMap = null;
+        }
+        $('#loadmap_keluar').empty();
+    });
+
+    $('#modal-map_keluar').on('hidden.bs.modal', function () {
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
+});
+
+    // Tombol "Lihat Lokasi" (berdasarkan row yang dipilih)
+    $("#btn-map_keluar").on("click", function (e) {
+        e.preventDefault();
+        let selected = table ? table.row('.selected').data() : null;
+        if (_.isEmpty(selected) || selected == undefined) {
+            Swal.fire({
+                title: 'Peringatan',
+                text: 'Pilih Data Terlebih Dahulu',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+        loadMapDataKeluar(selected.id);
+    });
+
+    // Tombol map kecil di kolom lokasi masuk (langsung berdasarkan id baris)
+    $(document).on('click', '.showmap_keluar', function (e) {
+        e.preventDefault();
+        var id = $(this).attr('id');
+        if (!id) return;
+        loadMapDataKeluar(id);
+    });
 
     // Auto generate nomor PR saat modal dibuka
     $('button[data-target="#formModal"]').on('click', function() {
@@ -461,7 +652,7 @@ function viewDatatable() {
                 }
             },
             {
-                data: "lokasi_masuk",
+                data: "jam_keluar",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -471,32 +662,14 @@ function viewDatatable() {
                 }
             },
             {
-                data: "jam_pulang",
+                data: "foto_keluar",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
                     } else {
-                        return data;
-                    }
-                }
-            },
-            {
-                data: "foto_pulang",
-                render: function (data, type, row, meta) {
-                    if (data == '' || data == null) {
-                        return '-';
-                    } else {
-                        return data;
-                    }
-                }
-            },
-            {
-                data: "lokasi_pulang",
-                render: function (data, type, row, meta) {
-                    if (data == '' || data == null) {
-                        return '-';
-                    } else {
-                        return data;
+                        var baseUrl = "{{ url('storage/uploads/absensi/') }}/";
+
+                        return '<img src="' + baseUrl + data + '" alt="foto" style="width:80px; height:80px; object-fit:cover; border-radius:5px;">';
                     }
                 }
             },

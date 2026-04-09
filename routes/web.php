@@ -58,6 +58,7 @@ Route::middleware(['UserAkses:superadmin,admin,staff'])->group(function() {
     Route::post('/absen/store',                           [AbsensiController::class, 'store']);
     Route::post('/getabsensi',                            [DashboardController::class, 'getabsensi']);
     Route::post('/showmap',                               [DashboardController::class, 'showmap']);
+    Route::post('/showmap_keluar',                        [DashboardController::class, 'showmap_keluar']);
 
 
     //PROFILE
