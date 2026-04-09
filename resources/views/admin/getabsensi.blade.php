@@ -48,13 +48,15 @@ use Illuminate\Support\Facades\Storage;
 
     </td>
     <td style="text-align: center">
-        @if($item->jam_masuk > '08:05:00')
-        <?php
-        $jamterlambat = selisih('08:05:00', $item->jam_masuk);
-        ?>
-        <span class="badge bg-danger">Terlambat {{ $jamterlambat }}</span>
+        @if(empty($item->jam_masuk))
+            <span class="badge bg-secondary">Tidak Absen</span>
+        @elseif($item->jam_masuk > '08:05:00')
+            <?php
+            $jamterlambat = selisih('08:05:00', $item->jam_masuk);
+            ?>
+            <span class="badge bg-danger">Terlambat {{ $jamterlambat }}</span>
         @else
-        <span class="badge bg-success">Tepat Waktu</span>
+            <span class="badge bg-success">Tepat Waktu</span>
         @endif
 
     </td>

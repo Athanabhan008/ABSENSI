@@ -107,21 +107,22 @@ class AbsensiController extends Controller
 
     $status = $isTelatMasuk ? 'telat' : 'hadir';
 
-    $bulanSekarang = Carbon::now()->month;
-    $tahunSekarang = Carbon::now()->year;
+    // Hitung telat hanya dalam bulan kalender berjalan (reset tiap ganti bulan)
+    $refTanggal = Carbon::parse($tgl_absen);
+    $awalBulan = $refTanggal->copy()->startOfMonth()->toDateString();
+    $akhirBulan = $refTanggal->copy()->endOfMonth()->toDateString();
 
     $totalTelat = DB::table('absens')
         ->where('id_user', $id_user)
-        ->where('jam_masuk', '>', '08:05:00')
-        ->whereMonth('tgl_absen', $bulanSekarang)
-        ->whereYear('tgl_absen', $tahunSekarang)
+        ->where('jam_masuk', '>', $batasMasuk)
+        ->whereBetween('tgl_absen', [$awalBulan, $akhirBulan])
         ->count();
 
-    // status approve
+    // status approve: need approve (0) jika telat dalam sebulan sudah > 3 kali
     if ($status == 'hadir') {
         $statusApprove = 1;
     } else {
-        $statusApprove = (($totalTelat + 1) >= 3) ? 0 : 1;
+        $statusApprove = (($totalTelat + 1) > 3) ? 0 : 1;
     }
 
     if ($existing) {

@@ -39,7 +39,7 @@ class DataAbsensiController extends Controller
             $startDate = \Carbon\Carbon::createFromFormat('Y-m', "$year-$month")->startOfMonth();
             $endDate = \Carbon\Carbon::createFromFormat('Y-m', "$year-$month")->endOfMonth();
 
-            $query->whereBetween('created_at', [$startDate, $endDate]);
+            $query->whereBetween('tgl_absen', [$startDate->toDateString(), $endDate->toDateString()]);
         }
 
         $total = $query->count();
@@ -59,11 +59,21 @@ class DataAbsensiController extends Controller
 
     public function approve(Request $request, $id)
     {
-        $cuti                                  = Absen::find($id);
-        $cuti->status_approve                  = $request->status_approve;
-        $cuti->save();
+        $validated = $request->validate([
+            'status_approve' => 'required|in:0,1,2',
+        ]);
 
-        return back();
+        $absen = Absen::findOrFail($id);
+        $absen->status_approve = $validated['status_approve'];
+        $absen->save();
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'message' => 'Data approval berhasil disimpan.',
+            ]);
+        }
+
+        return back()->with('success', 'Data approval berhasil disimpan.');
     }
 
 
