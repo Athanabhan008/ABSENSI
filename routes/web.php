@@ -8,7 +8,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\SesiController;
 use App\Http\Controllers\manager\ManagerController;
 use App\Http\Controllers\CutiSakitController;
-use App\Http\Controllers\admin\IzinsakitController;
+use App\Http\Controllers\admin\SakitController;
 use App\Http\Controllers\admin\DataAbsensiController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Izinsakit;
@@ -69,7 +69,7 @@ Route::middleware(['UserAkses:superadmin,admin,staff'])->group(function() {
     Route::get('/izin_sakit',                             [CutiSakitController::class, 'index']);
     Route::get('/izin_sakit/create',                      [CutiSakitController::class, 'create']);
     Route::post('/izin_sakit/store',                      [CutiSakitController::class, 'store']);
-    Route::post('/izin_sakit/approve/{id}',               [IzinsakitController::class, 'approve']);
+    Route::post('/izin_sakit/approve/{id}',               [SakitController::class, 'approve']);
     Route::post('/cuti/approve/{id}',                     [CutiController::class, 'approve']);
 });
 
@@ -77,9 +77,15 @@ Route::middleware(['auth','UserAkses:superadmin,admin'])->group(function() {
 
 
 Route::get('/dashboard-admin',                            [DashboardController::class, 'index']);
-Route::get('/izinsakit',                                  [IzinsakitController::class, 'index']);
 Route::get('/cuti',                                       [CutiController::class, 'index']);
 Route::get('/report_absen',                               [ReportabsenController::class, 'index']);
+
+//SAKIT
+Route::get('/sakit',                                      [SakitController::class, 'index']);
+Route::get('/sakit/datatable',                            [SakitController::class, 'datatable'])->name('sakit/datatable');
+Route::post('/sakit/datatable',                           [SakitController::class, 'datatable'])->name('sakit/datatable');
+Route::post('/sakit/approve/{id}',                        [SakitController::class, 'approve'])->name('sakit/approve');
+
 
 //DATA ABSENSI KARYAWAN
 Route::get('/data-absensi',                                [DataAbsensiController::class, 'index']);

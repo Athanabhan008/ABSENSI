@@ -105,7 +105,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link  {{ ($active === "sakit") ? 'active' : '' }}" href="/izinsakit">
+          <a class="nav-link  {{ ($active === "sakit") ? 'active' : '' }}" href="/sakit">
             <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="fa-solid fa-book-medical" style="color: {{ ($active === "sakit") ? 'white' : 'black' }};"></i>
             </div>
