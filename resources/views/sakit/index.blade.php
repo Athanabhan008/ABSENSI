@@ -167,6 +167,40 @@
     </div>
   </div>
 
+  {{-- <div class="modal fade" id="previewSuratModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Preview Foto Surat</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">
+          <img id="previewSuratImage" src="" alt="Preview Foto Surat" style="max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 6px;">
+        </div>
+      </div>
+    </div>
+  </div> --}}
+
+
+  <div class="modal fade" id="previewSuratModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Preview Foto Surat</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+            <img id="previewSuratImage" src="" alt="Preview Foto Surat" style="max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 6px;">
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   @push('scripts')
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
@@ -489,8 +523,11 @@ function viewDatatable() {
                         return '-';
                     } else {
                         var baseUrl = "{{ url('storage/uploads/surat_sakit/') }}/";
+                        var imageUrl = baseUrl + data;
 
-                        return '<img src="' + baseUrl + data + '" alt="foto" style="width:80px; height:80px; object-fit:cover; border-radius:5px;">';
+                        return '<a href="#" class="foto-surat-preview" data-image="' + imageUrl + '">' +
+                            '<img src="' + imageUrl + '" alt="foto" style="width:80px; height:80px; object-fit:cover; border-radius:5px;">' +
+                            '</a>';
                     }
                 }
             },
@@ -576,6 +613,19 @@ function viewDatatable() {
             $(this).addClass('selected');
             $('#btn-ubah').removeClass('disabled');
         }
+    });
+
+    $(document).off('click', '.foto-surat-preview').on('click', '.foto-surat-preview', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var imageUrl = $(this).data('image');
+        $('#previewSuratImage').attr('src', imageUrl);
+        $('#previewSuratModal').modal('show');
+    });
+
+    $('#previewSuratModal').on('hidden.bs.modal', function () {
+        $('#previewSuratImage').attr('src', '');
     });
 }
 
