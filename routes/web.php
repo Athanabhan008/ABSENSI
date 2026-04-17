@@ -92,6 +92,8 @@ Route::get('/data-absensi',                                [DataAbsensiControlle
 Route::get('/data-absensi/datatable',                      [DataAbsensiController::class, 'datatable'])->name('data-absensi/datatable');
 Route::post('/data-absensi/datatable',                     [DataAbsensiController::class, 'datatable'])->name('data-absensi/datatable');
 Route::post('/data-absensi/approve/{id}',                  [DataAbsensiController::class, 'approve'])->name('data-absensi/approve');
+Route::get('/data-absensi/getKaryawan',                    [DataAbsensiController::class, 'getKaryawan'])->name('data-absensi/getKaryawan');
+Route::post('/data-absensi/getKaryawan',                   [DataAbsensiController::class, 'getKaryawan'])->name('data-absensi/getKaryawan');
 
 
 //KARYAWAN

@@ -197,6 +197,13 @@
                         <input type="text" name="periode_start" id="periode_start" class="form-control form-control-lg pl-3 yearmonthpicker" placeholder="Pilih Bulan (YYYYMM)" autocomplete="off">
                     </div>
 
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" style="width: 100px; height: 35px; background-color: rgb(222, 222, 222);">Nama Karyawan</span>
+                        </div>
+                        <select name="cmb_karyawan" id="cmb_karyawan" class="form-select"></select>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -419,7 +426,7 @@ $(document).ready(function() {
     $('.submit-filter').on('click', function() {
         // Reload datatable dengan filter baru
         if (table) {
-            table.ajax.reload();
+            table.ajax.reload(null, true);
         } else {
             viewDatatable();
         }
@@ -572,8 +579,8 @@ $(document).ready(function() {
         closeModal();
     });
 
-    collectionS2Search();
-    collectionS2SearchPR();
+    collectionS2Karyawan();
+
 
 });
 
@@ -583,7 +590,7 @@ function viewDatatable() {
             url: "{{ route('data-absensi/datatable') }}",
             "type": "post",
             "data": function (d) {
-                var formData = $("#form_filter").serializeArray().concat($("#form_filter").serializeArray());
+                var formData = $("#form_filter").serializeArray();
                 $.each(formData, function (key, val) {
                     if (val.value !== '') {
                         d[val.name] = val.value;
@@ -792,49 +799,14 @@ function showNotification(type, message) {
     });
 }
 
-function collectionS2Search() {
-    $('select[name=cmb_sales]').select2({
+function collectionS2Karyawan() {
+    $('select[name=cmb_karyawan]').select2({
         dropdownParent: $('#formFilter'),
-        allowClear: true,
-        width: '100%',
-        placeholder: 'Pilih Sales',
-        ajax: {
-            url: "{{ url('/data-absensi/getSales') }}",
-            dataType: 'json',
-            data: function (params) {
-                return {
-                    q: params.term,
-                    page: params.page || 1
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: $.map(data.data, function (item) {
-                        return {
-                            text: item.name,
-                            id: item.id
-                        }
-                    })
-                };
-            },
-            cache: true
-        }
-    });
-}
-
-$('#formFilter').on('shown.bs.modal', function () {
-    collectionS2Search();
-});
-
-
-function collectionS2SearchPR() {
-    $('select[name=cmb_sales]').select2({
-        dropdownParent: $('#formFilterPR'),
         allowClear: true,
         width: '72.5%',
         placeholder: '',
         ajax: {
-            url: "{{ url('/data-absensi/getSales') }}",
+            url: "{{ url('/data-absensi/getKaryawan') }}",
             dataType: 'json',
             data: function (params) {
                 return {
@@ -860,12 +832,19 @@ function collectionS2SearchPR() {
     });
 
      // Event handler for when kategori changes
-     $('select[name=cmb_sales]').on('select2:select', function (e) {
+     $('select[name=cmb_karyawan]').on('select2:select', function (e) {
         var data = e.params.data;
 
-        $('#cmb_sales').val(data.id);
+        $('#cmb_karyawan').val(data.id);
     });
 }
+
+$('#formFilter').on('shown.bs.modal', function () {
+    collectionS2Karyawan();
+});
+
+
+
 
 
 
