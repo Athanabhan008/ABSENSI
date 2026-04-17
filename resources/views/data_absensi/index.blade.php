@@ -73,7 +73,9 @@
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Foto Masuk</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Jam Pulang</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Foto Pulang</th>
+                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Status</th>
                         <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Status Absensi</th>
+                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Keterangan</th>
                       </tr>
                     </thead>
                     <tbody></tbody>
@@ -677,6 +679,16 @@ function viewDatatable() {
                 }
             },
             {
+                data: "status",
+                render: function (data, type, row, meta) {
+                    if (data == '' || data == null) {
+                        return '-';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            {
                 data: "status_approve",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
@@ -690,8 +702,18 @@ function viewDatatable() {
                     } else {
                         return data;
                     }
+                },
+            },
+            {
+                data: "keterangan",
+                render: function (data, type, row, meta) {
+                    if (data == '' || data == null) {
+                        return '-';
+                    } else {
+                        return data;
+                    }
                 }
-}
+            }
         ],
             createdRow: function (row, data, index) {
                 $(row).attr("data-value", encodeURIComponent(JSON.stringify(data)));
