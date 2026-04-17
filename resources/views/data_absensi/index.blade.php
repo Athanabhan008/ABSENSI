@@ -178,7 +178,7 @@
 
 
   <div class="modal fade" id="formFilter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Filter Absensi</h5>
@@ -199,7 +199,7 @@
 
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                          <span class="input-group-text" style="width: 100px; height: 35px; background-color: rgb(222, 222, 222);">Nama Karyawan</span>
+                          <span class="input-group-text" style="width: 125px; height: 35px; background-color: rgb(222, 222, 222);">Nama Karyawan</span>
                         </div>
                         <select name="cmb_karyawan" id="cmb_karyawan" class="form-select"></select>
                     </div>
