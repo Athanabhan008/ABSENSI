@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" integrity="sha512-xrbX64SIXOxo5cMQEDUQ3UyKsCreOEq1Im90z3B7KPoxLJ2ol/tCT0aBhuIzASfmBVdODioUdUPbt5EDEXmD9g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 
 
 <style>
@@ -37,32 +38,18 @@
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0">
-                <h6>Data Cuti</h6>
+                <h6>Data Karyawan cuti</h6>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="ml-auto">
 
-                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#formModal">
-                            <i class="fa-solid fa-plus fa-lg" style="margin-right: 10px"></i>Tambah Data
-                        </button>
-
-                        @if(Auth::user() && Auth::user()->role === 'superadmin' || Auth::user() && Auth::user()->role == 'admin' || Auth::user() && Auth::user()->role == 'manager')
-                            <button type="button" class="btn btn-primary" id="btn-filter" data-toggle="modal" data-target="#formFilter">
-                                <i class="fa-solid fa-book fa-lg" style="margin-right: 10px"></i>Filter Karyawan
-                              </button>
-                        @endif
-
-                        @if(Auth::user() && Auth::user()->role === 'sales')
-                            <button type="button" class="btn btn-primary" id="btn-filter" data-toggle="modal" data-target="#formFilterPR">
-                                <i class="fa-solid fa-book fa-lg" style="margin-right: 10px"></i>Filter PR
-                              </button>
-                        @endif
+                          <button type="button" class="btn btn-primary" id="btn-filter" data-toggle="modal" data-target="#formFilter">
+                            <i class="fa-solid fa-book fa-lg" style="margin-right: 10px"></i>Filter Bulan
+                          </button>
 
                           <button type="button" class="btn btn-warning" id="btn-edit" data-toggle="modal" data-target="#formModal">
-                            <i class="fa-solid fa-pencil" style="margin-right: 10px;"></i> Ubah Data
+                            <i class="fa-solid fa-pencil" style="margin-right: 10px;"></i> Approval
                           </button>
-                          <button type="button" class="btn btn-danger" id="btn-delete">
-                            <i class="fa-solid fa-trash" style="margin-right: 10px;"></i> Hapus Data
-                          </button>
+
                     </div>
                 </div>
               </div>
@@ -72,12 +59,12 @@
                     <thead style="background-color: #1E3135; color: white;">
                       <tr>
                         <th style="color: white;" class="text-uppercase text-xxs font-weight-bolder opacity-7">No</th>
-                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Nama </th>
-                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Email</th>
-                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">No.HP</th>
-                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Role</th>
-                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Tgl Masuk</th>
-                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Jatah Cuti</th>
+                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Nama Karyawan</th>
+                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">TGL Pengajuan Awal</th>
+                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">TGL Pengajuan Akhir</th>
+                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Total Hari</th>
+                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Keterangan</th>
+                        <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Status Approve</th>
                       </tr>
                     </thead>
                     <tbody></tbody>
@@ -110,82 +97,35 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Tambah Data Karyawan</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <h5 class="modal-title" id="exampleModalLabel">Approval</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form id="form_karyawan">
+            <form id="form_data_absensi">
                 @csrf
                 <div class="modal-body">
                     <input type="hidden" name="_type" value="create">
                     <input type="hidden" name="id" id="id" value="">
 
                     <div class="row">
-                        <div class="col-6">
+
+                        <div class="col-12">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
-                                  <span class="input-group-text" style="width: 120px; height: 35px; background-color: rgb(222, 222, 222);">Nama</span>
+                                  <span class="input-group-text" style="width: 130px; height: 35px; background-color: rgb(222, 222, 222);">Status Kehadiran</span>
                                 </div>
-                                <input type="text" name="name" id="name" class="form-control" style="border: 1px solid black;" required>
-                            </div>
-                        </div>
-
-                        <div class="col-6">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                  <span class="input-group-text" style="width: 120px; height: 35px; background-color: rgb(222, 222, 222);">Email</span>
-                                </div>
-                                <input type="text" name="email" id="email" class="form-control" style="border: 1px solid black;" required>
+                                <select name="status_approve" id="status_approve" class="form-select">
+                                    <option value="#">--- Pilih Approval ---</option>
+                                    <option value="1">Approve</option>
+                                    <option value="2">Rejected</option>
+                                </select>
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" style="width: 120px; height: 35px; background-color: rgb(222, 222, 222);">Password</span>
-                                  </div>
-                                  <input type="password" class="form-control" name="password" id="password" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-                        </div>
-
-                        <div class="col-6">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" style="width: 120px; height: 35px; background-color: rgb(222, 222, 222);">No.HP</span>
-                                  </div>
-                                  <input type="number" class="form-control" name="no_hp" id="no_hp" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" style="width: 120px; height: 35px; background-color: rgb(222, 222, 222);">Tanggal Masuk</span>
-                          </div>
-                          <input id="datepicker" type="text" class="form-control" name="tgl_masuk" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                    </div>
-
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                          <label class="input-group-text" for="inputGroupSelect01">Role</label>
-                        </div>
-                        <select class="custom-select" name="role" id="inputGroupSelect01" required>
-                          <option selected>Choose...</option>
-                          <option value="superadmin">Superadmin</option>
-                          <option value="admin">Admin</option>
-                          <option value="staff">Staff</option>
-                        </select>
-                      </div>
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                     <button type="submit" class="btn btn-success">Simpan</button>
                 </div>
             </form>
@@ -199,7 +139,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Form - FIlter PR</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Filter Bulan</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -215,13 +155,6 @@
                         <input type="text" name="periode_start" id="periode_start" class="form-control form-control-lg pl-3 yearmonthpicker" placeholder="Pilih Bulan (YYYYMM)" autocomplete="off">
                     </div>
 
-                    <div class="input-group mb-3">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text" style="width: 100px; height: 35px; background-color: rgb(222, 222, 222);">Nama Sales</span>
-                        </div>
-                        <select name="cmb_sales" id="cmb_sales" class="bg-danger"></select>
-                    </div>
-
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -233,32 +166,35 @@
     </div>
   </div>
 
-  <div class="modal fade" id="formFilterPR" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+  {{-- <div class="modal fade" id="previewSuratModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Form - FIlter PR</h5>
+          <h5 class="modal-title">Preview Foto Surat</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-            <form id="form_filterPR">
-                @csrf
-                <div class="modal-body">
-                    <input type="hidden" name="_type" value="create">
-                    <input type="hidden" name="id" id="id" value="">
+        <div class="modal-body text-center">
+          <img id="previewSuratImage" src="" alt="Preview Foto Surat" style="max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 6px;">
+        </div>
+      </div>
+    </div>
+  </div> --}}
 
-                    <div class="input-group mb-3">
-                        <input type="text" name="periode_start" id="periode_start" class="form-control form-control-lg pl-3 yearmonthpicker" placeholder="Pilih Bulan (YYYYMM)" autocomplete="off">
-                    </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-success submit-filter" data-dismiss="modal">Simpan</button>
-                </div>
-            </form>
+  <div class="modal fade" id="previewSuratModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Preview Foto Surat</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+            <img id="previewSuratImage" src="" alt="Preview Foto Surat" style="max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 6px;">
+          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
         </div>
       </div>
     </div>
@@ -275,29 +211,55 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
   <script src="../../admin/assets/js/plugins/bootstrap-datepicker.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
 
 console.log("kipak");
 
-window.defaultUrl = '{{ url('/karyawan/') }}/';
+window.defaultUrl = '{{ url('/cuti/') }}/';
 
 let modal = $("#formModal");
 let table;
+let dataAbsensiMap = null;
 
-$('#datepicker').datepicker({
-    format: "yyyy-mm-dd",
-    minViewMode: "date",
-    startView: "date",
+$('.yearmonthpicker').datepicker({
+    format: "yyyy-mm",
+    minViewMode: "months",
+    startView: "months",
     autoclose: true
 });
 
 $(document).ready(function() {
     viewDatatable();
 
+    function initAbsensiMapInModal() {
+        var el = document.getElementById('mapAbsensi');
+        if (!el || typeof L === 'undefined') return;
+
+        var lat = parseFloat(el.dataset.lat);
+        var lng = parseFloat(el.dataset.lng);
+        if (isNaN(lat) || isNaN(lng)) return;
+
+        if (dataAbsensiMap) {
+            try { dataAbsensiMap.remove(); } catch (e) {}
+            dataAbsensiMap = null;
+        }
+
+        dataAbsensiMap = L.map(el).setView([lat, lng], 18);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(dataAbsensiMap);
+        L.marker([lat, lng]).addTo(dataAbsensiMap);
+
+        setTimeout(function () {
+            if (dataAbsensiMap) dataAbsensiMap.invalidateSize();
+        }, 200);
+    }
     // Auto generate nomor PR saat modal dibuka
     $('button[data-target="#formModal"]').on('click', function() {
         // Reset form
-        $('#form_karyawan')[0].reset();
+        $('#form_data_absensi')[0].reset();
 
         // Set form type to create
         $('input[name=_type]').val('create');
@@ -340,11 +302,7 @@ $(document).ready(function() {
 
         modal.find("input[name=_type]").val("update");
         modal.find("input[name=id]").val(selected.id);
-        modal.find("input[name=name]").val(selected.name);
-        modal.find("input[name=email]").val(selected.email);
-        modal.find("input[name=no_hp]").val(selected.no_hp);
-        modal.find("input[name=tgl_masuk]").val(selected.tgl_masuk);
-        modal.find("select[name=role]").val(selected.role);
+        modal.find("select[name=status_approve]").val(selected.status_approve);
 
         resetErrors();
         modal.modal("show");
@@ -366,7 +324,7 @@ $(document).ready(function() {
 
         let type = $("[name=_type]").val();
         let id = $("[name=id]").val();
-        let url = type == "create" ? defaultUrl + "create" : defaultUrl + "update/" + id;
+        let url = type == "update" ? defaultUrl + "approve/" + id : defaultUrl + "approve/" + id;
 
         $.ajax({
             url: url,
@@ -374,25 +332,16 @@ $(document).ready(function() {
             data: $(this).serialize(),
             dataType: 'json',
             success: function(response) {
-                // Reset form terlebih dahulu
-                $('#form_karyawan')[0].reset();
-
-                // Reload table
-                table.ajax.reload();
-
-                // Tutup modal menggunakan helper function
+                $('#form_data_absensi')[0].reset();
                 closeModal();
-
-                // Tampilkan SweetAlert
+                if (table) {
+                    table.ajax.reload(null, false);
+                }
                 Swal.fire({
                     title: 'Sukses',
-                    text: response.message,
+                    text: response.message || 'Data berhasil disimpan.',
                     icon: 'success',
                     confirmButtonText: 'OK'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        table.ajax.reload();
-                    }
                 });
             },
             error: function(jqXHR) {
@@ -460,7 +409,7 @@ $(document).ready(function() {
                             alert(response.message);
                             table.ajax.reload();
                         }
-                        $('#form_karyawan')[0].reset();
+                        $('#form_data_absensi')[0].reset();
                     },
                     error: function(jqXHR) {
                         let message = 'Terjadi kesalahan saat menghapus data';
@@ -492,10 +441,10 @@ $(document).ready(function() {
 function viewDatatable() {
     table = $('.basic-datatables').DataTable({
         ajax: {
-            url: "{{ route('karyawan/datatable') }}",
+            url: "{{ route('cuti/datatable') }}",
             "type": "post",
             "data": function (d) {
-                var formData = $("#form_filter").serializeArray().concat($("#form_filterPR").serializeArray());
+                var formData = $("#form_filter").serializeArray().concat($("#form_filter").serializeArray());
                 $.each(formData, function (key, val) {
                     if (val.value !== '') {
                         d[val.name] = val.value;
@@ -514,8 +463,8 @@ function viewDatatable() {
         select: {
             style: 'single'
         },
-        // Urutkan data terbaru di paling atas (berdasarkan kolom created_at / index ke-1)
-        order: [[1, 'desc']],
+        // Urutkan: kolom 2 = tgl_absen (desc = tanggal terbaru dulu)
+        order: [[2, 'desc']],
         columnDefs: [{
             searchable: false,
             targets: [0]
@@ -537,7 +486,7 @@ function viewDatatable() {
                 }
             },
             {
-                data: "email",
+                data: "tgl_pengajuan",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -547,7 +496,7 @@ function viewDatatable() {
                 }
             },
             {
-                data: "no_hp",
+                data: "tgl_pengajuan_akhir",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -557,7 +506,7 @@ function viewDatatable() {
                 }
             },
             {
-                data: "role",
+                data: "total_hari",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -567,7 +516,7 @@ function viewDatatable() {
                 }
             },
             {
-                data: "tgl_masuk",
+                data: "keterangan",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
@@ -577,15 +526,21 @@ function viewDatatable() {
                 }
             },
             {
-                data: "jatah_cuti",
+                data: "status_approve",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
+                    } else if (data == 1) {
+                        return '<span class="badge bg-success">Approved</span>';
+                    } else if (data == 2) {
+                        return '<span class="badge bg-danger">Rejected</span>';
+                    }else if (data == 0) {
+                        return '<span class="badge bg-warning">Need Approve</span>';
                     } else {
                         return data;
                     }
                 }
-            },
+}
         ],
             createdRow: function (row, data, index) {
                 $(row).attr("data-value", encodeURIComponent(JSON.stringify(data)));
@@ -643,6 +598,19 @@ function viewDatatable() {
             $('#btn-ubah').removeClass('disabled');
         }
     });
+
+    $(document).off('click', '.foto-surat-preview').on('click', '.foto-surat-preview', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var imageUrl = $(this).data('image');
+        $('#previewSuratImage').attr('src', imageUrl);
+        $('#previewSuratModal').modal('show');
+    });
+
+    $('#previewSuratModal').on('hidden.bs.modal', function () {
+        $('#previewSuratImage').attr('src', '');
+    });
 }
 
 // Tambahkan fungsi helper untuk handle modal
@@ -663,85 +631,6 @@ function showNotification(type, message) {
         confirmButtonText: 'OK'
     });
 }
-
-function collectionS2Search() {
-    $('select[name=cmb_sales]').select2({
-        dropdownParent: $('#formFilter'),
-        allowClear: true,
-        width: '100%',
-        placeholder: 'Pilih Sales',
-        ajax: {
-            url: "{{ url('/karyawan/getSales') }}",
-            dataType: 'json',
-            data: function (params) {
-                return {
-                    q: params.term,
-                    page: params.page || 1
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: $.map(data.data, function (item) {
-                        return {
-                            text: item.name,
-                            id: item.id
-                        }
-                    })
-                };
-            },
-            cache: true
-        }
-    });
-}
-
-$('#formFilter').on('shown.bs.modal', function () {
-    collectionS2Search();
-});
-
-
-function collectionS2SearchPR() {
-    $('select[name=cmb_sales]').select2({
-        dropdownParent: $('#formFilterPR'),
-        allowClear: true,
-        width: '72.5%',
-        placeholder: '',
-        ajax: {
-            url: "{{ url('/karyawan/getSales') }}",
-            dataType: 'json',
-            data: function (params) {
-                return {
-                    q: params.term,
-                    page: params.page || 1
-                };
-            },
-            processResults: function (data) {
-                return {
-                    results: $.map(data.data, function (item) {
-                        return {
-                            text: item.name,
-                            id: item.id
-                        }
-                    }),
-                    pagination: {
-                        more: false
-                    }
-                };
-            },
-            cache: true
-        }
-    });
-
-     // Event handler for when kategori changes
-     $('select[name=cmb_sales]').on('select2:select', function (e) {
-        var data = e.params.data;
-
-        $('#cmb_sales').val(data.id);
-    });
-}
-
-
-
-
 </script>
   @endpush
 

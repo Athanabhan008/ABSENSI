@@ -77,7 +77,6 @@ Route::middleware(['auth','UserAkses:superadmin,admin'])->group(function() {
 
 
 Route::get('/dashboard-admin',                            [DashboardController::class, 'index']);
-Route::get('/cuti',                                       [CutiController::class, 'index']);
 Route::get('/report_absen',                               [ReportabsenController::class, 'index']);
 
 //SAKIT
@@ -86,6 +85,11 @@ Route::get('/sakit/datatable',                            [SakitController::clas
 Route::post('/sakit/datatable',                           [SakitController::class, 'datatable'])->name('sakit/datatable');
 Route::post('/sakit/approve/{id}',                        [SakitController::class, 'approve'])->name('sakit/approve');
 
+//
+Route::get('/cuti',                                       [CutiController::class, 'index']);
+Route::get('/cuti/datatable',                             [CutiController::class, 'datatable'])->name('cuti/datatable');
+Route::post('/cuti/datatable',                            [CutiController::class, 'datatable'])->name('cuti/datatable');
+Route::post('/cuti/approve/{id}',                         [CutiController::class, 'approve'])->name('cuti/approve');
 
 //DATA ABSENSI KARYAWAN
 Route::get('/data-absensi',                                [DataAbsensiController::class, 'index']);
