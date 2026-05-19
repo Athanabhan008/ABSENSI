@@ -35,7 +35,18 @@ class AbsensiController extends Controller
 {
     $user = auth()->user();
     $id_user = $user->id;
-    $keterangan = trim($request->keterangan ?? '');
+
+    $keteranganMasukInput = trim($request->keterangan_masuk ?? '');
+    $keteranganPulangInput = trim($request->keterangan_pulang ?? '');
+
+    foreach ([$keteranganMasukInput, $keteranganPulangInput] as $inputKeterangan) {
+        if ($inputKeterangan !== '' && !$this->isKeteranganAlphanumeric($inputKeterangan)) {
+            echo "error|Keterangan hanya boleh berisi huruf, angka, dan spasi";
+            return;
+        }
+    }
+
+    $keterangan_masuk = $keteranganMasukInput ?: $keteranganPulangInput;
     $tgl_absen = date("Y-m-d");
     $jam_masuk = date("H:i:s");
 
@@ -73,15 +84,15 @@ class AbsensiController extends Controller
     }
 
     // aturan jam
-    $batasMasuk  = "08:10:00";
-    $batasPulang = "16:30:00";
+    $batasMasuk  = "08:05:00";
+    $batasPulang = "17:00:00";
 
     $isTelatMasuk = ($ket == "in" && $jam_masuk > $batasMasuk);
     $isPulangCepat = ($ket == "out" && $jam_masuk < $batasPulang);
     $diLuarRadius = ($radius > 20);
 
     // wajib isi keterangan
-    if (($isTelatMasuk || $isPulangCepat || $diLuarRadius) && $keterangan === '') {
+    if (($isTelatMasuk || $isPulangCepat || $diLuarRadius) && $keterangan_masuk === '') {
         echo "error|Anda wajib mengisi keterangan karena telat / di luar radius";
         return;
     }
@@ -133,10 +144,10 @@ class AbsensiController extends Controller
             $update = DB::table('absens')
                 ->where('id', $existing->id)
                 ->update([
-                    'jam_keluar'    => $jam_masuk,
-                    'lokasi_keluar' => $lokasi,
-                    'foto_keluar'   => $fileName,
-                    'keterangan'    => $keterangan,
+                    'jam_keluar'           => $jam_masuk,
+                    'lokasi_keluar'        => $lokasi,
+                    'foto_keluar'          => $fileName,
+                    'keterangan_pulang'    => $keterangan_masuk,
                 ]);
 
             if ($update) {
@@ -151,12 +162,12 @@ class AbsensiController extends Controller
             $update = DB::table('absens')
                 ->where('id', $existing->id)
                 ->update([
-                    'jam_masuk'      => $jam_masuk,
-                    'lokasi_masuk'   => $lokasi,
-                    'foto_masuk'     => $fileName,
-                    'status'         => $status,
-                    'status_approve' => $statusApprove,
-                    'keterangan'     => $keterangan,
+                    'jam_masuk'            => $jam_masuk,
+                    'lokasi_masuk'         => $lokasi,
+                    'foto_masuk'           => $fileName,
+                    'status'               => $status,
+                    'status_approve'       => $statusApprove,
+                    'keterangan_masuk'     => $keterangan_masuk,
                 ]);
 
             if ($update) {
@@ -170,14 +181,14 @@ class AbsensiController extends Controller
     } else {
 
         $simpan = DB::table('absens')->insert([
-            'id_user'         => $id_user,
-            'tgl_absen'       => $tgl_absen,
-            'jam_masuk'       => $jam_masuk,
-            'lokasi_masuk'    => $lokasi,
-            'foto_masuk'      => $fileName,
-            'status'          => $status,
-            'status_approve'  => $statusApprove,
-            'keterangan'      => $keterangan,
+            'id_user'               => $id_user,
+            'tgl_absen'             => $tgl_absen,
+            'jam_masuk'             => $jam_masuk,
+            'lokasi_masuk'          => $lokasi,
+            'foto_masuk'            => $fileName,
+            'status'                => $status,
+            'status_approve'        => $statusApprove,
+            'keterangan_masuk'      => $keterangan_masuk,
         ]);
 
         if ($simpan){
@@ -188,6 +199,11 @@ class AbsensiController extends Controller
         }
     }
 }
+
+    private function isKeteranganAlphanumeric(string $keterangan): bool
+    {
+        return (bool) preg_match('/^[a-zA-Z0-9\s]+$/u', $keterangan);
+    }
 
     public function distance($lat1, $lon1, $lat2, $lon2)
     {

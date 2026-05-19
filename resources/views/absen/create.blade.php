@@ -137,7 +137,11 @@
 
             <div class="col-12 col-md-6">
                 <div class="absen-card p-3">
-                    <textarea class="form-control absen-textarea" id="keterangan" rows="3" style="border: 1px solid #0b1220" placeholder="Keterangan"></textarea>
+                    @if ($cek > 0)
+                    <textarea class="form-control absen-textarea" id="keterangan_masuk" rows="3" style="border: 1px solid #0b1220" placeholder="Isi keterangan pulang"></textarea>
+                    @else
+                    <textarea class="form-control absen-textarea" id="keterangan_pulang" rows="3" style="border: 1px solid #0b1220" placeholder="Isi keterangan masuk"></textarea>
+                    @endif
                 </div>
             </div>
         </div>
@@ -251,7 +255,8 @@
                 image = uri;
             });
             var lokasi = $("#lokasi").val();
-            var keterangan = $("#keterangan").val();
+            var keterangan_masuk = $("#keterangan_masuk").val();
+            var keterangan_pulang = $("#keterangan_pulang").val();
             $.ajax({
                 type: 'POST',
                 url: 'absen/store',
@@ -259,7 +264,8 @@
                     _token: "{{ csrf_token() }}",
                     image: image,
                     lokasi: lokasi,
-                    keterangan: keterangan
+                    keterangan_masuk:  keterangan_masuk,
+                    keterangan_pulang: keterangan_pulang
                 },
                 cache: false,
                 success: function(respond) {
