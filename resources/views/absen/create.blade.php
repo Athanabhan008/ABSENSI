@@ -138,9 +138,9 @@
             <div class="col-12 col-md-6">
                 <div class="absen-card p-3">
                     @if ($cek > 0)
-                    <textarea class="form-control absen-textarea" id="keterangan_masuk" rows="3" style="border: 1px solid #0b1220" placeholder="Isi keterangan pulang"></textarea>
+                    <textarea class="form-control absen-textarea" id="keterangan_masuk" rows="3" style="border: 1px solid #0b1220" placeholder="Isi keterangan kenapa kamu pulang duluan/absen diluar radius"></textarea>
                     @else
-                    <textarea class="form-control absen-textarea" id="keterangan_pulang" rows="3" style="border: 1px solid #0b1220" placeholder="Isi keterangan masuk"></textarea>
+                    <textarea class="form-control absen-textarea" id="keterangan_pulang" rows="3" style="border: 1px solid #0b1220" placeholder="Isi keterangan kenapa kamu terlambat/absen diluar radius"></textarea>
                     @endif
                 </div>
             </div>
