@@ -40,8 +40,15 @@ class AbsensiController extends Controller
     $keteranganPulangInput = trim($request->keterangan_pulang ?? '');
 
     foreach ([$keteranganMasukInput, $keteranganPulangInput] as $inputKeterangan) {
-        if ($inputKeterangan !== '' && !$this->isKeteranganAlphanumeric($inputKeterangan)) {
+        if ($inputKeterangan === '') {
+            continue;
+        }
+        if (!$this->isKeteranganAlphanumeric($inputKeterangan)) {
             echo "error|Keterangan hanya boleh berisi huruf, angka, dan spasi";
+            return;
+        }
+        if (mb_strlen($inputKeterangan) < 5) {
+            echo "error|Keterangan tidak valid, berikan keterangan yang jelas";
             return;
         }
     }
@@ -92,9 +99,15 @@ class AbsensiController extends Controller
     $diLuarRadius = ($radius > 20);
 
     // wajib isi keterangan
-    if (($isTelatMasuk || $isPulangCepat || $diLuarRadius) && $keterangan_masuk === '') {
-        echo "error|Anda wajib mengisi keterangan karena telat / di luar radius";
-        return;
+    if ($isTelatMasuk || $isPulangCepat || $diLuarRadius) {
+        if ($keterangan_masuk === '') {
+            echo "error|Anda wajib mengisi keterangan karena telat / di luar radius";
+            return;
+        }
+        if (mb_strlen($keterangan_masuk) < 5) {
+            echo "error|Keterangan tidak valid, berikan keterangan yang jelas";
+            return;
+        }
     }
 
     $image = $request->image;
