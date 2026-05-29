@@ -185,7 +185,8 @@
                                             <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">No.HP</th>
                                             <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Jam Masuk</th>
                                             <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Jam Keluar</th>
-                                            <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Keterangan</th>
+                                            <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Keterangan Masuk</th>
+                                            <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Keterangan Pulang</th>
                                             <th style="color: white;" class="text-center text-uppercase text-xxs font-weight-bolder opacity-7">Status</th>
                                             </tr>
                                         </thead>
@@ -635,7 +636,17 @@ function viewDatatable(callback) {
                 }
             },
             {
-                data: "keterangan",
+                data: "keterangan_masuk",
+                render: function (data, type, row, meta) {
+                    if (data == '' || data == null) {
+                        return '-';
+                    } else {
+                        return data;
+                    }
+                }
+            },
+             {
+                data: "keterangan_pulang",
                 render: function (data, type, row, meta) {
                     if (data == '' || data == null) {
                         return '-';
