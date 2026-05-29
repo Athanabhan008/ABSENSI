@@ -410,11 +410,14 @@ class ReportabsenController extends Controller
      }
 
      // ─── Output PDF ───────────────────────────────────────────────────────────
-     $startLabel = Carbon::createFromFormat('Ym', $periode_start)->translatedFormat('F_Y');
-     $endLabel   = Carbon::createFromFormat('Ym', $periode_end)->translatedFormat('F_Y');
-     $fileName   = 'Laporan_Absensi_' . $startLabel . '-' . $endLabel . '.pdf';
-     $this->fpdf->Output('D', $fileName);
-     exit;
+    //  $this->fpdf->Output();
+
+    // Contoh: Laporan_Absensi_Januari_2025-Maret_2025.pdf
+    $startLabel = Carbon::createFromFormat('Ym', $periode_start)->translatedFormat('F_Y');
+    $endLabel   = Carbon::createFromFormat('Ym', $periode_end)->translatedFormat('F_Y');
+    $fileName   = 'Laporan_Absensi_' . $startLabel . '-' . $endLabel . '.pdf';
+    $this->fpdf->Output('D', $fileName);
+    exit;
  }
 
 }
