@@ -410,7 +410,10 @@ class ReportabsenController extends Controller
      }
 
      // ─── Output PDF ───────────────────────────────────────────────────────────
-     $this->fpdf->Output();
+     $startLabel = Carbon::createFromFormat('Ym', $periode_start)->translatedFormat('F_Y');
+     $endLabel   = Carbon::createFromFormat('Ym', $periode_end)->translatedFormat('F_Y');
+     $fileName   = 'Laporan_Absensi_' . $startLabel . '-' . $endLabel . '.pdf';
+     $this->fpdf->Output('D', $fileName);
      exit;
  }
 
