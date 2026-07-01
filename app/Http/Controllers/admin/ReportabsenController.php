@@ -336,7 +336,7 @@ class ReportabsenController extends Controller
              $isTerlambat = false;
              if ($jam_masuk !== '-' && $jam_masuk > '08:05:00') {
                  $jamterlambat = selisih('08:05:00', $jam_masuk);
-                 $status       = 'Terlambat ' . $jamterlambat;
+                 $status       = 'Terlambat Jam ' . $jamterlambat . ' Menit';
                  $isTerlambat  = true;
              } elseif ($jam_masuk !== '-') {
                  $status = 'Tepat Waktu';
