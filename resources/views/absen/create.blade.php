@@ -259,7 +259,32 @@
         box-shadow: 0 0 0 .2rem rgba(67,97,238,.15);
     }
 
-    /* ── TOMBOL ABSEN ── */
+    /* ── TOMBOL ABSEN (statis/fixed, tidak ikut scroll turun) ── */
+    .btn-absen-wrapper{
+        position: fixed;
+        left: 50%;
+        bottom: 82px; /* mengambang di atas bottom-nav mobile */
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 640px;
+        padding: 0 16px;
+        z-index: 500;
+        pointer-events: none; /* area kosong wrapper tidak menutup klik konten di belakangnya */
+    }
+    .btn-absen-wrapper .btn-absen{ pointer-events: auto; }
+
+    @media (min-width: 900px){
+        .btn-absen-wrapper{
+            left: auto;
+            right: 32px;
+            bottom: 32px;
+            transform: none;
+            width: auto;
+            max-width: 260px;
+            padding: 0;
+        }
+    }
+
     .btn-absen{
         width:100%;
         border:none;
@@ -281,6 +306,9 @@
         background: linear-gradient(135deg, #EF476F, #C53030);
         box-shadow: 0 6px 18px rgba(239,71,111,.35);
     }
+
+    /* beri jarak bawah supaya konten terakhir tidak tertutup tombol fixed */
+    .main-content{ padding-bottom: 150px; }
 
     @media (max-width: 359px){
         .keterangan-card, .month-header{ padding: 10px; }
@@ -359,21 +387,24 @@
                     @endif
                 </div>
 
-                @if ($cek > 0)
-                <button id="takeabsen" class="btn-absen pulang">
-                    <i class="fa-solid fa-camera"></i> Absen Pulang
-                </button>
-                @else
-                <button id="takeabsen" class="btn-absen masuk">
-                    <i class="fa-solid fa-camera"></i> Absen Masuk
-                </button>
-                @endif
-
             </div>
         </div>
         {{-- ── END RIGHT COLUMN ── --}}
 
     </div>{{-- .desktop-layout --}}
+
+    {{-- Tombol absen: fixed di layar, tidak ikut scroll --}}
+    <div class="btn-absen-wrapper">
+        @if ($cek > 0)
+        <button id="takeabsen" class="btn-absen pulang">
+            <i class="fa-solid fa-camera"></i> Absen Pulang
+        </button>
+        @else
+        <button id="takeabsen" class="btn-absen masuk">
+            <i class="fa-solid fa-camera"></i> Absen Masuk
+        </button>
+        @endif
+    </div>
 </div>
 
 @endsection
