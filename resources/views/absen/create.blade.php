@@ -268,7 +268,7 @@
         width: 100%;
         max-width: 640px;
         padding: 0 16px;
-        z-index: 500;
+        z-index: 99999; /* dipastikan lebih tinggi dari bottom-nav menu */
         pointer-events: none; /* area kosong wrapper tidak menutup klik konten di belakangnya */
     }
     .btn-absen-wrapper .btn-absen{ pointer-events: auto; }
